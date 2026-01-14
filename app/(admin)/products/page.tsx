@@ -81,7 +81,7 @@ export default function AdminProductsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((product) => (
+                  {products.map((product: any) => (
                     <tr key={product.id} className="border-b hover:bg-gray-50">
                       <td className="py-3 px-4">
                         <div className="font-medium">{product.name}</div>
