@@ -34,7 +34,7 @@ export function CustomerHeader() {
               Products
             </Link>
             {isAuthenticated && (
-              <Link href="/orders" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link href="/my-orders" className="text-sm font-medium hover:text-primary transition-colors">
                 My Orders
               </Link>
             )}
