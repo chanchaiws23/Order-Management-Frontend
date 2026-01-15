@@ -7,6 +7,7 @@ import {
   Package, 
   ShoppingCart, 
   Users, 
+  UserCog,
   Tag, 
   Star, 
   CreditCard, 
@@ -23,6 +24,7 @@ const navigation = [
   { name: 'Coupons', href: '/admin/coupons', icon: Tag, requiredRole: 'MANAGER' },
   { name: 'Reviews', href: '/admin/reviews', icon: Star, requiredRole: 'STAFF' },
   { name: 'Payments', href: '/admin/payments', icon: CreditCard, requiredRole: 'STAFF' },
+  { name: 'Users', href: '/admin/users', icon: UserCog, requiredRole: 'ADMIN' },
   { name: 'Settings', href: '/admin/settings', icon: Settings, requiredRole: 'ADMIN' },
 ];
 
