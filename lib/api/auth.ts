@@ -20,6 +20,11 @@ export const authApi = {
     apiClient.post('/api/auth/change-password', data),
 };
 
+// Normalize role to uppercase format
+function normalizeRole(role: string): string {
+  return role?.toUpperCase().replace(/-/g, '_') || 'CUSTOMER';
+}
+
 export function useLogin() {
   const { login } = useAuthStore();
 
@@ -43,6 +48,11 @@ export function useLogin() {
       }
       
       if (user && accessToken) {
+        // Normalize role to uppercase
+        user = {
+          ...user,
+          role: normalizeRole(user.role),
+        };
         login(user, accessToken);
       }
     },

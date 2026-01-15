@@ -1,17 +1,19 @@
 'use client';
 
-import { Package, Clock, CheckCircle, XCircle } from 'lucide-react';
+import Link from 'next/link';
+import { Package, Clock, CheckCircle, XCircle, ChevronRight, Truck } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
 import { useOrders } from '@/lib/api/orders';
 import { formatPrice, formatDateTime } from '@/lib/utils';
 
-const statusIcons = {
-  PENDING: <Clock className="h-5 w-5 text-yellow-500" />,
-  PROCESSING: <Clock className="h-5 w-5 text-blue-500" />,
-  SHIPPED: <Package className="h-5 w-5 text-purple-500" />,
-  DELIVERED: <CheckCircle className="h-5 w-5 text-green-500" />,
-  CANCELLED: <XCircle className="h-5 w-5 text-red-500" />,
+const statusConfig = {
+  PENDING: { icon: Clock, color: 'bg-yellow-100 text-yellow-800', label: 'Pending' },
+  PROCESSING: { icon: Clock, color: 'bg-blue-100 text-blue-800', label: 'Processing' },
+  SHIPPED: { icon: Truck, color: 'bg-purple-100 text-purple-800', label: 'Shipped' },
+  DELIVERED: { icon: CheckCircle, color: 'bg-green-100 text-green-800', label: 'Delivered' },
+  CANCELLED: { icon: XCircle, color: 'bg-red-100 text-red-800', label: 'Cancelled' },
 };
 
 function OrdersContent() {
@@ -48,38 +50,41 @@ function OrdersContent() {
       <h1 className="text-3xl font-bold mb-8">My Orders</h1>
 
       <div className="space-y-4">
-        {orders.map((order) => (
-          <Card key={order.id}>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Order #{order.id.slice(0, 8)}</CardTitle>
-                <div className="flex items-center gap-2">
-                  {statusIcons[order.status]}
-                  <span className="font-medium">{order.status}</span>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Placed on {formatDateTime(order.createdAt)}
-              </p>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Items</span>
-                  <span className="font-medium">{order.itemCount} items</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total</span>
-                  <span className="font-bold">{formatPrice(order.totalAmount)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Payment Method</span>
-                  <span className="font-medium capitalize">{order.paymentMethod.replace('_', ' ')}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        {orders.map((order: any) => {
+          const status = statusConfig[order.status as keyof typeof statusConfig];
+          const StatusIcon = status.icon;
+          return (
+            <Link key={order.id} href={`/my-orders/${order.id}`}>
+              <Card className="hover:border-primary transition-colors cursor-pointer">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">Order #{order.id.slice(0, 8)}</CardTitle>
+                    <Badge className={status.color}>
+                      <StatusIcon className="h-3 w-3 mr-1" />
+                      {status.label}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Placed on {formatDateTime(order.createdAt)}
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm text-muted-foreground">
+                        {order.itemCount} items • {formatPrice(order.totalAmount)}
+                      </p>
+                      <p className="text-sm text-muted-foreground capitalize">
+                        {order.paymentMethod.replace('_', ' ')}
+                      </p>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

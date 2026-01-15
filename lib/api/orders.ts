@@ -35,7 +35,24 @@ export function useOrders(params?: { status?: string; page?: number; limit?: num
     queryKey: ['orders', params],
     queryFn: async () => {
       const { data } = await orderApi.getOrders(params);
-      return data.orders;
+      const apiData = data as any;
+      
+      // Handle different response structures
+      if (apiData.orders && Array.isArray(apiData.orders)) {
+        return apiData.orders;
+      }
+      if (apiData.data?.orders && Array.isArray(apiData.data.orders)) {
+        return apiData.data.orders;
+      }
+      if (apiData.data && Array.isArray(apiData.data)) {
+        return apiData.data;
+      }
+      if (Array.isArray(apiData)) {
+        return apiData;
+      }
+      
+      console.log('[useOrders] Unexpected response structure:', apiData);
+      return [];
     },
   });
 }

@@ -39,7 +39,7 @@ export function CustomerHeader() {
             <Link href="/shop" className="text-sm font-medium hover:text-primary transition-colors">
               Products
             </Link>
-            {isAuthenticated && (
+            {mounted && isAuthenticated && (
               <Link href="/my-orders" className="text-sm font-medium hover:text-primary transition-colors">
                 My Orders
               </Link>
@@ -59,7 +59,7 @@ export function CustomerHeader() {
             </Button>
           </Link>
 
-          {isAuthenticated ? (
+          {mounted && isAuthenticated ? (
             <div className="flex items-center gap-2">
               <Link href="/profile">
                 <Button variant="ghost" size="icon">
@@ -73,7 +73,7 @@ export function CustomerHeader() {
                 {user?.firstName}
               </span>
             </div>
-          ) : (
+          ) : mounted ? (
             <div className="flex items-center gap-2">
               <Link href="/login">
                 <Button variant="ghost" size="sm">
@@ -84,7 +84,7 @@ export function CustomerHeader() {
                 <Button size="sm">Sign up</Button>
               </Link>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </header>

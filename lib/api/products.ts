@@ -42,8 +42,28 @@ export function useProducts(filters?: ProductFilters) {
     queryKey: ['products', filters],
     queryFn: async () => {
       const { data } = await productApi.getProducts(filters);
-      // Return the full response to preserve pagination data
-      return data as any;
+      const apiData = data as any;
+      
+      // Handle different response structures
+      // { success: true, products: [...] }
+      if (apiData.products && Array.isArray(apiData.products)) {
+        return apiData.products;
+      }
+      // { success: true, data: { products: [...] } }
+      if (apiData.data?.products && Array.isArray(apiData.data.products)) {
+        return apiData.data.products;
+      }
+      // { success: true, data: [...] }
+      if (apiData.data && Array.isArray(apiData.data)) {
+        return apiData.data;
+      }
+      // Direct array
+      if (Array.isArray(apiData)) {
+        return apiData;
+      }
+      
+      console.log('[useProducts] Unexpected response structure:', apiData);
+      return [];
     },
   });
 }

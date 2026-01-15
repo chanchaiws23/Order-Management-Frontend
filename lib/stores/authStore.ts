@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { User } from '@/types/auth';
+import { useEffect, useState } from 'react';
 
 interface AuthState {
   user: User | null;
@@ -27,7 +28,30 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
-      partialize: (state) => ({ user: state.user }),
+      partialize: (state) => ({
+        user: state.user,
+        accessToken: state.accessToken,
+        isAuthenticated: state.isAuthenticated,
+      }),
     }
   )
 );
+
+// Hydration-safe hook for use in components
+export const useAuthStoreHydrated = () => {
+  const [hydrated, setHydrated] = useState(false);
+  const store = useAuthStore();
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  return {
+    ...store,
+    hydrated,
+    // Return safe defaults before hydration
+    user: hydrated ? store.user : null,
+    isAuthenticated: hydrated ? store.isAuthenticated : false,
+    accessToken: hydrated ? store.accessToken : null,
+  };
+};
