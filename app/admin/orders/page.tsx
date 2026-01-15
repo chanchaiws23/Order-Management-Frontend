@@ -69,10 +69,10 @@ export default function AdminOrdersPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.map((order) => (
+                  {orders.map((order: any) => (
                     <tr key={order.id} className="border-b hover:bg-gray-50">
                       <td className="py-3 px-4 font-mono text-sm">
-                        #{order.id.slice(0, 8)}
+                        #{order.id?.slice(0, 8)}
                       </td>
                       <td className="py-3 px-4">
                         <div className="font-medium">{order.customerName}</div>
@@ -86,7 +86,7 @@ export default function AdminOrdersPage() {
                         {formatPrice(order.totalAmount)}
                       </td>
                       <td className="py-3 px-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusColors[order.status]}`}>
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusColors[order.status as keyof typeof statusColors] || 'bg-gray-100 text-gray-800'}`}>
                           {order.status}
                         </span>
                       </td>
