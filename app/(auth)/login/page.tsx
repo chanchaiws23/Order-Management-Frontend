@@ -32,16 +32,24 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
-      await loginMutation.mutateAsync(data);
+      const response = await loginMutation.mutateAsync(data);
+      console.log('Login response:', response);
+      console.log('Response data:', response.data);
+      
+      const apiData = response.data as any;
+      const loggedInUser = apiData.user || apiData.data?.user || apiData;
+      
       toast.success('Login successful!');
       
-      if (user?.role && ['STAFF', 'MANAGER', 'ADMIN', 'SUPER_ADMIN'].includes(user.role)) {
+      if (loggedInUser?.role && ['STAFF', 'MANAGER', 'ADMIN', 'SUPER_ADMIN'].includes(loggedInUser.role)) {
         router.push('/admin/dashboard');
       } else {
         router.push('/shop');
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Login failed');
+      console.error('Login error:', error);
+      console.error('Error response:', error.response);
+      toast.error(error.response?.data?.message || error.message || 'Login failed');
     } finally {
       setIsLoading(false);
     }

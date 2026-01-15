@@ -26,8 +26,25 @@ export function useLogin() {
   return useMutation({
     mutationFn: authApi.login,
     onSuccess: (response) => {
-      const { user, tokens } = response.data;
-      login(user, tokens.accessToken);
+      const apiData = response.data as any;
+      
+      // Handle different response structures
+      let user, accessToken;
+      
+      if (apiData.user && apiData.tokens) {
+        user = apiData.user;
+        accessToken = apiData.tokens.accessToken;
+      } else if (apiData.data) {
+        user = apiData.data.user || apiData.data;
+        accessToken = apiData.data.accessToken || apiData.data.tokens?.accessToken;
+      } else {
+        user = apiData;
+        accessToken = apiData.accessToken;
+      }
+      
+      if (user && accessToken) {
+        login(user, accessToken);
+      }
     },
   });
 }
