@@ -31,11 +31,14 @@ export default function RegisterPage() {
     setIsLoading(true);
     try {
       await registerMutation.mutateAsync(data);
-      toast.success('Registration successful!');
-      router.push('/shop');
+      toast.success('Registration successful! Redirecting to login...', {
+        duration: 3000,
+      });
+      setTimeout(() => {
+        router.push('/login');
+      }, 3000);
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Registration failed');
-    } finally {
       setIsLoading(false);
     }
   };

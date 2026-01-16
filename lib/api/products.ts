@@ -37,6 +37,13 @@ export const productApi = {
     apiClient.patch(`/api/products/${id}/stock`, { quantity }),
 };
 
+export interface ProductsResponse {
+  products: Product[];
+  total: number;
+  totalPages: number;
+  page: number;
+}
+
 export function useProducts(filters?: ProductFilters) {
   return useQuery({
     queryKey: ['products', filters],
@@ -44,26 +51,40 @@ export function useProducts(filters?: ProductFilters) {
       const { data } = await productApi.getProducts(filters);
       const apiData = data as any;
       
-      // Handle different response structures
+      // Handle different response structures and extract pagination info
+      let products: Product[] = [];
+      let total = 0;
+      let totalPages = 1;
+      let page = 1;
+
+      // { success: true, data: [...], total, totalPages }
+      if (apiData.data && Array.isArray(apiData.data)) {
+        products = apiData.data;
+        total = apiData.total || products.length;
+        totalPages = apiData.totalPages || 1;
+        page = apiData.page || 1;
+      }
       // { success: true, products: [...] }
-      if (apiData.products && Array.isArray(apiData.products)) {
-        return apiData.products;
+      else if (apiData.products && Array.isArray(apiData.products)) {
+        products = apiData.products;
+        total = apiData.total || products.length;
+        totalPages = apiData.totalPages || 1;
+        page = apiData.page || 1;
       }
       // { success: true, data: { products: [...] } }
-      if (apiData.data?.products && Array.isArray(apiData.data.products)) {
-        return apiData.data.products;
-      }
-      // { success: true, data: [...] }
-      if (apiData.data && Array.isArray(apiData.data)) {
-        return apiData.data;
+      else if (apiData.data?.products && Array.isArray(apiData.data.products)) {
+        products = apiData.data.products;
+        total = apiData.data.total || apiData.total || products.length;
+        totalPages = apiData.data.totalPages || apiData.totalPages || 1;
+        page = apiData.data.page || apiData.page || 1;
       }
       // Direct array
-      if (Array.isArray(apiData)) {
-        return apiData;
+      else if (Array.isArray(apiData)) {
+        products = apiData;
+        total = products.length;
       }
       
-      console.log('[useProducts] Unexpected response structure:', apiData);
-      return [];
+      return { products, total, totalPages, page } as ProductsResponse;
     },
   });
 }

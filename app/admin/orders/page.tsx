@@ -1,12 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Eye } from 'lucide-react';
+import { Search, Eye, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { useOrders } from '@/lib/api/orders';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useOrders, useUpdateOrderStatus } from '@/lib/api/orders';
 import { formatPrice, formatDateTime } from '@/lib/utils';
+import { toast } from 'sonner';
 
 const statusColors = {
   PENDING: 'bg-yellow-100 text-yellow-800',
@@ -16,9 +32,45 @@ const statusColors = {
   CANCELLED: 'bg-red-100 text-red-800',
 };
 
+const ITEMS_PER_PAGE = 10;
+
 export default function AdminOrdersPage() {
   const [search, setSearch] = useState('');
-  const { data: orders, isLoading } = useOrders();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [newStatus, setNewStatus] = useState('');
+
+  const { data: allOrders, isLoading } = useOrders();
+  const updateStatus = useUpdateOrderStatus();
+
+  // Filter and pagination
+  const orders = allOrders?.filter((order: any) =>
+    order.id?.toLowerCase().includes(search.toLowerCase()) ||
+    order.customerName?.toLowerCase().includes(search.toLowerCase()) ||
+    order.customerEmail?.toLowerCase().includes(search.toLowerCase())
+  ) || [];
+  const totalPages = Math.ceil(orders.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedOrders = orders.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const handleOpenEdit = (order: any) => {
+    setSelectedOrder(order);
+    setNewStatus(order.status);
+    setIsDialogOpen(true);
+  };
+
+  const handleUpdateStatus = async () => {
+    if (!selectedOrder || !newStatus) return;
+
+    try {
+      await updateStatus.mutateAsync({ id: selectedOrder.id, status: newStatus });
+      toast.success('Order status updated successfully');
+      setIsDialogOpen(false);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to update order status');
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -54,7 +106,7 @@ export default function AdminOrdersPage() {
             </div>
           )}
 
-          {orders && orders.length > 0 && (
+          {orders.length > 0 && (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -69,7 +121,7 @@ export default function AdminOrdersPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.map((order: any) => (
+                  {paginatedOrders.map((order: any) => (
                     <tr key={order.id} className="border-b hover:bg-gray-50">
                       <td className="py-3 px-4 font-mono text-sm">
                         #{order.id?.slice(0, 8)}
@@ -92,7 +144,7 @@ export default function AdminOrdersPage() {
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center justify-end">
-                          <Button variant="ghost" size="icon">
+                          <Button variant="ghost" size="icon" onClick={() => handleOpenEdit(order)}>
                             <Eye className="h-4 w-4" />
                           </Button>
                         </div>
@@ -103,8 +155,99 @@ export default function AdminOrdersPage() {
               </table>
             </div>
           )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-4 pt-4 border-t">
+              <div className="text-sm text-muted-foreground">
+                Showing {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, orders.length)} of {orders.length} orders
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Previous
+                </Button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? 'default' : 'outline'}
+                      size="sm"
+                      className="w-8"
+                      onClick={() => setCurrentPage(page)}
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
+
+      {/* Order Status Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Update Order Status</DialogTitle>
+          </DialogHeader>
+          {selectedOrder && (
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">Order ID</p>
+                <p className="font-mono">#{selectedOrder.id?.slice(0, 8)}</p>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">Customer</p>
+                <p className="font-medium">{selectedOrder.customerName}</p>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">Total</p>
+                <p className="font-medium">{formatPrice(selectedOrder.totalAmount)}</p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="status">Status</Label>
+                <Select value={newStatus} onValueChange={setNewStatus}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="PENDING">Pending</SelectItem>
+                    <SelectItem value="PROCESSING">Processing</SelectItem>
+                    <SelectItem value="SHIPPED">Shipped</SelectItem>
+                    <SelectItem value="DELIVERED">Delivered</SelectItem>
+                    <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleUpdateStatus} disabled={updateStatus.isPending}>
+              {updateStatus.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Update Status
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

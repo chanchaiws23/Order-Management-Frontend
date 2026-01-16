@@ -18,23 +18,33 @@ export interface UpdateUserRequest {
 }
 
 export const userApi = {
+  // GET /api/users - ดึงรายชื่อ users ทั้งหมด (มี pagination)
   getUsers: (params?: { page?: number; limit?: number; search?: string; role?: string }) =>
-    apiClient.get<{ success: boolean; users: User[] }>('/api/users', { params }),
+    apiClient.get<{ success: boolean; users: User[]; total?: number }>('/api/users', { params }),
 
+  // GET /api/users/search - ค้นหา users ตามเงื่อนไข
+  searchUsers: (params: { query?: string; role?: string; isActive?: boolean }) =>
+    apiClient.get<{ success: boolean; users: User[] }>('/api/users/search', { params }),
+
+  // GET /api/users/stats - สถิติ users
+  getUserStats: () =>
+    apiClient.get<{ success: boolean; stats: { total: number; byRole: Record<string, number>; active: number; inactive: number } }>('/api/users/stats'),
+
+  // GET /api/users/:id - ดูข้อมูล user คนใดคนหนึ่ง
   getUser: (id: string) =>
     apiClient.get<{ success: boolean; user: User }>(`/api/users/${id}`),
 
+  // POST /api/users - สร้าง user ใหม่
   createUser: (data: CreateUserRequest) =>
     apiClient.post<{ success: boolean; user: User }>('/api/users', data),
 
+  // PUT /api/users/:id - แก้ไขข้อมูล user
   updateUser: (id: string, data: UpdateUserRequest) =>
     apiClient.put<{ success: boolean; user: User }>(`/api/users/${id}`, data),
 
+  // DELETE /api/users/:id - ลบ user
   deleteUser: (id: string) =>
     apiClient.delete(`/api/users/${id}`),
-
-  updateUserRole: (id: string, role: UserRole) =>
-    apiClient.patch(`/api/users/${id}/role`, { role }),
 };
 
 export function useUsers(params?: { page?: number; limit?: number; search?: string; role?: string }) {
@@ -114,14 +124,25 @@ export function useDeleteUser() {
   });
 }
 
-export function useUpdateUserRole() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ id, role }: { id: string; role: UserRole }) =>
-      userApi.updateUserRole(id, role),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
+export function useUserStats() {
+  return useQuery({
+    queryKey: ['users', 'stats'],
+    queryFn: async () => {
+      const { data } = await userApi.getUserStats();
+      const apiData = data as any;
+      return apiData.stats || apiData.data?.stats || apiData.data || apiData;
     },
+  });
+}
+
+export function useSearchUsers(params: { query?: string; role?: string; isActive?: boolean }) {
+  return useQuery({
+    queryKey: ['users', 'search', params],
+    queryFn: async () => {
+      const { data } = await userApi.searchUsers(params);
+      const apiData = data as any;
+      return apiData.users || apiData.data?.users || apiData.data || [];
+    },
+    enabled: !!(params.query || params.role),
   });
 }

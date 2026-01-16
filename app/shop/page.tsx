@@ -18,9 +18,10 @@ export default function ProductsPage() {
 
   const { data: response, isLoading, error } = useProducts({ search, page, limit: 10, ...filters });
   
-  // Handle both array and paginated response
-  const products = Array.isArray(response) ? response : response?.data || [];
-  const pagination = !Array.isArray(response) ? response : null;
+  // Extract products and pagination from response
+  const products = response?.products || [];
+  const totalPages = response?.totalPages || 1;
+  const total = response?.total || 0;
   
   // Log for debugging
   if (error) {
@@ -80,7 +81,7 @@ export default function ProductsPage() {
             ))}
           </div>
 
-          {pagination && pagination.totalPages > 1 && (
+          {totalPages > 1 && (
             <div className="mt-8 flex items-center justify-center gap-2">
               <Button
                 variant="outline"
@@ -93,7 +94,7 @@ export default function ProductsPage() {
               </Button>
               
               <div className="flex items-center gap-2">
-                {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((pageNum) => (
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
                   <Button
                     key={pageNum}
                     variant={page === pageNum ? "default" : "outline"}
@@ -109,8 +110,8 @@ export default function ProductsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
-                disabled={page === pagination.totalPages}
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
               >
                 Next
                 <ChevronRight className="h-4 w-4 ml-1" />
@@ -118,9 +119,9 @@ export default function ProductsPage() {
             </div>
           )}
 
-          {pagination && (
+          {total > 0 && (
             <div className="mt-4 text-center text-sm text-muted-foreground">
-              Showing {((page - 1) * pagination.limit) + 1} to {Math.min(page * pagination.limit, pagination.total)} of {pagination.total} products
+              Showing {((page - 1) * 10) + 1} to {Math.min(page * 10, total)} of {total} products
             </div>
           )}
         </>
