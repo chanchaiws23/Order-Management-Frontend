@@ -15,7 +15,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { useProducts, useDeleteProduct, useCreateProduct, useUpdateProduct } from '@/lib/api/products';
+import { useAllProducts, useDeleteProduct, useCreateProduct, useUpdateProduct } from '@/lib/api/products';
 import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -48,7 +48,7 @@ export default function AdminProductsPage() {
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [formData, setFormData] = useState<ProductFormData>(defaultFormData);
   
-  const { data: productsData, isLoading } = useProducts({ search, page: currentPage, limit: ITEMS_PER_PAGE });
+  const { data: productsData, isLoading } = useAllProducts({ search, page: currentPage, limit: ITEMS_PER_PAGE });
   
   // Use pagination info from API
   const products = productsData?.products || [];
@@ -102,10 +102,19 @@ export default function AdminProductsPage() {
 
     try {
       if (editingProduct) {
-        await updateProduct.mutateAsync({ id: editingProduct.id, data: formData });
+        // Send both isActive and status for backend compatibility
+        const updateData = {
+          ...formData,
+          status: formData.isActive ? 'ACTIVE' : 'INACTIVE',
+        };
+        await updateProduct.mutateAsync({ id: editingProduct.id, data: updateData });
         toast.success('Product updated successfully');
       } else {
-        await createProduct.mutateAsync(formData);
+        const createData = {
+          ...formData,
+          status: formData.isActive ? 'ACTIVE' : 'INACTIVE',
+        };
+        await createProduct.mutateAsync(createData);
         toast.success('Product created successfully');
       }
       setIsDialogOpen(false);

@@ -1,6 +1,7 @@
 'use client';
 
-import { Settings as SettingsIcon, Users, Shield } from 'lucide-react';
+import Link from 'next/link';
+import { Settings as SettingsIcon, Users, Shield, Store, Truck, CreditCard, Bell } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -12,7 +13,7 @@ export default function AdminSettingsPage() {
         <p className="text-muted-foreground">Manage system settings and configurations</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
@@ -24,7 +25,9 @@ export default function AdminSettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="outline">Manage Users</Button>
+            <Link href="/admin/users">
+              <Button variant="outline">Manage Users</Button>
+            </Link>
           </CardContent>
         </Card>
 
@@ -39,22 +42,77 @@ export default function AdminSettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="outline">Manage Roles</Button>
+            <Link href="/admin/settings/roles">
+              <Button variant="outline">Manage Roles</Button>
+            </Link>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <SettingsIcon className="h-5 w-5 text-primary" />
-              <CardTitle>System Configuration</CardTitle>
+              <Store className="h-5 w-5 text-primary" />
+              <CardTitle>Store Settings</CardTitle>
             </div>
             <CardDescription>
-              Configure system-wide settings
+              Configure store name, logo, and contact info
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="outline">Configure System</Button>
+            <Link href="/admin/settings/store">
+              <Button variant="outline">Configure Store</Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Truck className="h-5 w-5 text-primary" />
+              <CardTitle>Shipping Settings</CardTitle>
+            </div>
+            <CardDescription>
+              Configure shipping rates and methods
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/admin/settings/shipping">
+              <Button variant="outline">Configure Shipping</Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-primary" />
+              <CardTitle>Payment Settings</CardTitle>
+            </div>
+            <CardDescription>
+              Configure payment methods and gateways
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/admin/settings/payment">
+              <Button variant="outline">Configure Payment</Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Bell className="h-5 w-5 text-primary" />
+              <CardTitle>Notification Settings</CardTitle>
+            </div>
+            <CardDescription>
+              Configure email and push notifications
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/admin/settings/notifications">
+              <Button variant="outline">Configure Notifications</Button>
+            </Link>
           </CardContent>
         </Card>
       </div>

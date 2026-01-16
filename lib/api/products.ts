@@ -15,6 +15,9 @@ export const productApi = {
   getProducts: (params?: ProductFilters) =>
     apiClient.get<{ success: boolean; products: Product[] }>('/api/products', { params }),
 
+  getAllProducts: (params?: ProductFilters) =>
+    apiClient.get<{ success: boolean; data: Product[]; total: number; totalPages: number; page: number }>('/api/products/all', { params }),
+
   getProduct: (id: string) =>
     apiClient.get<{ success: boolean; product: Product }>(`/api/products/${id}`),
 
@@ -89,6 +92,27 @@ export function useProducts(filters?: ProductFilters) {
   });
 }
 
+export function useAllProducts(filters?: ProductFilters) {
+  return useQuery({
+    queryKey: ['allProducts', filters],
+    queryFn: async () => {
+      const { data } = await productApi.getAllProducts(filters);
+      const apiData = data as any;
+      
+      console.log('[useAllProducts] API Response:', apiData);
+      
+      const products = apiData.data || apiData.products || [];
+      const total = apiData.total || apiData.pagination?.total || products.length;
+      const totalPages = apiData.totalPages || apiData.pagination?.totalPages || Math.ceil(total / (filters?.limit || 10));
+      const page = apiData.page || apiData.pagination?.page || 1;
+      
+      console.log('[useAllProducts] Parsed:', { products: products.length, total, totalPages, page });
+      
+      return { products, total, totalPages, page } as ProductsResponse;
+    },
+  });
+}
+
 export function useProduct(id: string) {
   return useQuery({
     queryKey: ['product', id],
@@ -128,6 +152,7 @@ export function useCreateProduct() {
     mutationFn: productApi.createProduct,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['allProducts'] });
     },
   });
 }
@@ -140,6 +165,7 @@ export function useUpdateProduct() {
       productApi.updateProduct(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['allProducts'] });
     },
   });
 }
@@ -151,6 +177,7 @@ export function useDeleteProduct() {
     mutationFn: productApi.deleteProduct,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['allProducts'] });
     },
   });
 }
