@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, CreditCard, Wallet, Loader2, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CreditCard, Wallet, Loader2, CheckCircle, Tag, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -19,9 +19,10 @@ import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/lib/hooks/useCart';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useCreateOrder } from '@/lib/api/orders';
+import { useValidateCoupon } from '@/lib/api/coupons';
 import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
-import { CreateOrderRequest, OrderItem } from '@/types/models';
+import { CreateOrderRequest, OrderItem, Coupon } from '@/types/models';
 
 const checkoutSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -55,10 +56,14 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [sameAsShipping, setSameAsShipping] = useState(true);
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [discount, setDiscount] = useState(0);
   const { items, totalPrice, totalItems, clearCart } = useCart();
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const createOrder = useCreateOrder();
+  const validateCoupon = useValidateCoupon();
 
   const {
     register,
@@ -140,6 +145,53 @@ export default function CheckoutPage() {
     return parts.join(', ');
   };
 
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) {
+      toast.error('Please enter a coupon code');
+      return;
+    }
+
+    try {
+      const result = await validateCoupon.mutateAsync({
+        code: couponCode.trim(),
+        orderTotal: totalPrice,
+      });
+      
+      const coupon = result.coupon;
+      let calculatedDiscount = result.discount;
+      
+      // Calculate discount from coupon if not already calculated
+      if (calculatedDiscount === 0 && coupon) {
+        if (coupon.discountType === 'PERCENTAGE' || coupon.type === 'PERCENTAGE') {
+          const discountValue = coupon.discountValue || coupon.value || 0;
+          calculatedDiscount = (totalPrice * discountValue) / 100;
+          const maxDiscount = coupon.maxDiscount || coupon.maxDiscountAmount;
+          if (maxDiscount && calculatedDiscount > maxDiscount) {
+            calculatedDiscount = maxDiscount;
+          }
+        } else {
+          calculatedDiscount = coupon.discountValue || coupon.value || 0;
+        }
+      }
+      
+      setAppliedCoupon(coupon);
+      setDiscount(calculatedDiscount);
+      toast.success(`Coupon applied! You save ${formatPrice(calculatedDiscount)}`);
+    } catch (error: any) {
+      const message = error.message || error.response?.data?.message || 'Invalid coupon code';
+      toast.error(message);
+      setAppliedCoupon(null);
+      setDiscount(0);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setDiscount(0);
+    setCouponCode('');
+    toast.info('Coupon removed');
+  };
+
   const onSubmit = async (data: CheckoutFormData) => {
     if (!user) {
       toast.error('Please login to continue');
@@ -165,6 +217,7 @@ export default function CheckoutPage() {
         ? formatAddress(data.shippingAddress)
         : formatAddress(data.billingAddress),
       notes: data.notes,
+      ...(appliedCoupon && { couponCode: appliedCoupon.code, discount }),
     };
 
     try {
@@ -187,7 +240,7 @@ export default function CheckoutPage() {
   }
 
   const shippingCost = totalPrice >= 1000 ? 0 : 50;
-  const grandTotal = totalPrice + shippingCost;
+  const grandTotal = totalPrice + shippingCost - discount;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -515,12 +568,66 @@ export default function CheckoutPage() {
 
                 <Separator />
 
+                {/* Coupon Code */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Coupon Code</Label>
+                  {appliedCoupon ? (
+                    <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-md p-3">
+                      <div className="flex items-center gap-2">
+                        <Tag className="h-4 w-4 text-green-600" />
+                        <div>
+                          <p className="text-sm font-medium text-green-700">{appliedCoupon.code}</p>
+                          <p className="text-xs text-green-600">-{formatPrice(discount)}</p>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleRemoveCoupon}
+                        className="h-8 w-8 p-0 text-green-600 hover:text-red-500"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Enter coupon code"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                        className="flex-1"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleApplyCoupon}
+                        disabled={validateCoupon.isPending}
+                      >
+                        {validateCoupon.isPending ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          'Apply'
+                        )}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                <Separator />
+
                 {/* Totals */}
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal ({totalItems} items)</span>
                     <span>{formatPrice(totalPrice)}</span>
                   </div>
+                  {discount > 0 && (
+                    <div className="flex justify-between text-sm text-green-600">
+                      <span>Discount</span>
+                      <span>-{formatPrice(discount)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Shipping</span>
                     <span>

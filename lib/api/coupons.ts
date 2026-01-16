@@ -18,6 +18,9 @@ export const couponApi = {
       orderTotal,
     }),
 
+  getCouponByCode: (code: string) =>
+    apiClient.get<{ success: boolean; coupon: Coupon }>(`/api/coupons/code/${code}`),
+
   createCoupon: (data: Partial<Coupon>) =>
     apiClient.post<{ success: boolean; coupon: Coupon }>('/api/coupons', data),
 
@@ -115,6 +118,66 @@ export function useToggleCoupon() {
     mutationFn: couponApi.toggleCoupon,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['coupons'] });
+    },
+  });
+}
+
+export function useValidateCoupon() {
+  return useMutation({
+    mutationFn: async ({ code, orderTotal }: { code: string; orderTotal: number }) => {
+      // First validate the coupon
+      const { data } = await couponApi.validateCoupon(code, orderTotal);
+      const apiData = data as any;
+      
+      console.log('[Coupon Validate] API Response:', apiData);
+      
+      // Check if coupon is valid
+      const isValid = apiData.valid ?? apiData.data?.valid ?? true;
+      if (!isValid) {
+        const message = apiData.message || apiData.data?.message || 'Invalid coupon code';
+        throw new Error(message);
+      }
+      
+      // Try to get coupon from validate response
+      let coupon = apiData.coupon || apiData.data?.coupon;
+      let discount = apiData.discount || apiData.data?.discount || 0;
+      
+      console.log('[Coupon Validate] Initial coupon:', coupon, 'discount:', discount);
+      
+      // If no coupon data, fetch by code
+      if (!coupon || discount === 0 || discount === null) {
+        try {
+          const couponResponse = await couponApi.getCouponByCode(code);
+          const couponData = couponResponse.data as any;
+          coupon = couponData.coupon || couponData.data?.coupon || couponData.data || couponData;
+          console.log('[Coupon Validate] getCouponByCode Response:', coupon);
+        } catch {
+          console.log('[Coupon Validate] getCouponByCode failed');
+        }
+      }
+      
+      // Calculate discount from coupon data if still 0 or null
+      if ((discount === 0 || discount === null) && coupon) {
+        const discountType = coupon.discountType || coupon.type;
+        const discountValue = coupon.discountValue || coupon.value || coupon.discount || 0;
+        
+        console.log('[Coupon Validate] Calculating discount - type:', discountType, 'value:', discountValue);
+        
+        if (discountType === 'PERCENTAGE') {
+          discount = (orderTotal * discountValue) / 100;
+          const maxDiscount = coupon.maxDiscount || coupon.maxDiscountAmount;
+          if (maxDiscount && discount > maxDiscount) {
+            discount = maxDiscount;
+          }
+        } else {
+          // FIXED_AMOUNT or FIXED
+          discount = discountValue;
+        }
+      }
+      
+      console.log('[Coupon Validate] Final result - coupon:', coupon, 'discount:', discount);
+      
+      return { coupon, discount: discount || 0 };
     },
   });
 }

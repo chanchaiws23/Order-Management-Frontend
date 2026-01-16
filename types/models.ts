@@ -67,6 +67,8 @@ export interface CreateOrderRequest {
   shippingAddress: string;
   billingAddress: string;
   notes?: string;
+  couponCode?: string;
+  discount?: number;
 }
 
 export interface Customer {
