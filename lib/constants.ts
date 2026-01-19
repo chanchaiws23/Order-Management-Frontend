@@ -1,4 +1,6 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+import { env } from './env';
+
+export const API_BASE_URL = env.NEXT_PUBLIC_API_URL;
 
 export const ROLE_HIERARCHY = {
   SUPER_ADMIN: 100,
