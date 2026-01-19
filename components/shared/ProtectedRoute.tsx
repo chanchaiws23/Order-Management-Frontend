@@ -28,22 +28,14 @@ export function ProtectedRoute({
   }, []);
 
   useEffect(() => {
-    // Only check auth after hydration is complete
     if (!hydrated) return;
 
-    console.log('[ProtectedRoute] hydrated:', hydrated);
-    console.log('[ProtectedRoute] isAuthenticated:', isAuthenticated);
-    console.log('[ProtectedRoute] requiredRole:', requiredRole);
-    console.log('[ProtectedRoute] hasRole result:', requiredRole ? hasRole(requiredRole) : 'no role required');
-
     if (!isAuthenticated) {
-      console.log('[ProtectedRoute] Not authenticated, redirecting to:', redirectTo);
       router.push(redirectTo);
       return;
     }
 
     if (requiredRole && !hasRole(requiredRole)) {
-      console.log('[ProtectedRoute] Missing required role, redirecting to /unauthorized');
       router.push('/unauthorized');
     }
   }, [hydrated, isAuthenticated, requiredRole, hasRole, router, redirectTo]);

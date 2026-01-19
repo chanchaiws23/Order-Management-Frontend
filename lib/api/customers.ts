@@ -42,7 +42,6 @@ export function useCustomers(params?: { page?: number; limit?: number; search?: 
           return apiData;
         }
         
-        console.log('[useCustomers] Unexpected response:', apiData);
         return [];
       } catch (error) {
         console.error('[useCustomers] Error:', error);

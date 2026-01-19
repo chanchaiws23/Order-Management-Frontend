@@ -68,7 +68,6 @@ export function useUsers(params?: { page?: number; limit?: number; search?: stri
           return apiData;
         }
         
-        console.log('[useUsers] Unexpected response:', apiData);
         return [];
       } catch (error) {
         console.error('[useUsers] Error:', error);

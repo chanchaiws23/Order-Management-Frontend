@@ -33,8 +33,6 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const response = await loginMutation.mutateAsync(data);
-      console.log('Login response:', response);
-      console.log('Response data:', response.data);
       
       const apiData = response.data as any;
       const loggedInUser = apiData.user || apiData.data?.user || apiData;

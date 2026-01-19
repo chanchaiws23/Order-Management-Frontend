@@ -75,7 +75,6 @@ export function usePendingReviews() {
           return apiData;
         }
         
-        console.log('[usePendingReviews] Unexpected response:', apiData);
         return [];
       } catch (error) {
         console.error('[usePendingReviews] Error:', error);

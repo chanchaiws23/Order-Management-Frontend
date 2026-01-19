@@ -55,7 +55,6 @@ export function useCoupons(params?: { page?: number; limit?: number }) {
           return apiData;
         }
         
-        console.log('[useCoupons] Unexpected response:', apiData);
         return [];
       } catch (error) {
         console.error('[useCoupons] Error:', error);
@@ -129,8 +128,6 @@ export function useValidateCoupon() {
       const { data } = await couponApi.validateCoupon(code, orderTotal);
       const apiData = data as any;
       
-      console.log('[Coupon Validate] API Response:', apiData);
-      
       // Check if coupon is valid
       const isValid = apiData.valid ?? apiData.data?.valid ?? true;
       if (!isValid) {
@@ -142,17 +139,14 @@ export function useValidateCoupon() {
       let coupon = apiData.coupon || apiData.data?.coupon;
       let discount = apiData.discount || apiData.data?.discount || 0;
       
-      console.log('[Coupon Validate] Initial coupon:', coupon, 'discount:', discount);
-      
       // If no coupon data, fetch by code
       if (!coupon || discount === 0 || discount === null) {
         try {
           const couponResponse = await couponApi.getCouponByCode(code);
           const couponData = couponResponse.data as any;
           coupon = couponData.coupon || couponData.data?.coupon || couponData.data || couponData;
-          console.log('[Coupon Validate] getCouponByCode Response:', coupon);
         } catch {
-          console.log('[Coupon Validate] getCouponByCode failed');
+          // Silently fail if getCouponByCode fails
         }
       }
       
@@ -160,8 +154,6 @@ export function useValidateCoupon() {
       if ((discount === 0 || discount === null) && coupon) {
         const discountType = coupon.discountType || coupon.type;
         const discountValue = coupon.discountValue || coupon.value || coupon.discount || 0;
-        
-        console.log('[Coupon Validate] Calculating discount - type:', discountType, 'value:', discountValue);
         
         if (discountType === 'PERCENTAGE') {
           discount = (orderTotal * discountValue) / 100;
@@ -174,8 +166,6 @@ export function useValidateCoupon() {
           discount = discountValue;
         }
       }
-      
-      console.log('[Coupon Validate] Final result - coupon:', coupon, 'discount:', discount);
       
       return { coupon, discount: discount || 0 };
     },

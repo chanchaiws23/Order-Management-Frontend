@@ -51,7 +51,6 @@ export function useOrders(params?: { status?: string; page?: number; limit?: num
         return apiData;
       }
       
-      console.log('[useOrders] Unexpected response structure:', apiData);
       return [];
     },
   });
