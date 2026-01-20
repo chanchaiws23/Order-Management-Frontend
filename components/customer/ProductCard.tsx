@@ -1,5 +1,6 @@
 'use client';
 
+import { memo, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Star, ShoppingCart } from 'lucide-react';
@@ -14,14 +15,17 @@ interface ProductCardProps {
   product: Product;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export const ProductCard = memo(function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    addToCart(product, 1);
-    toast.success(`${product.name} added to cart`);
-  };
+  const handleAddToCart = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      addToCart(product, 1);
+      toast.success(`${product.name} added to cart`);
+    },
+    [addToCart, product]
+  );
 
   return (
     <Link href={`/shop/${product.id}`}>
@@ -77,4 +81,4 @@ export function ProductCard({ product }: ProductCardProps) {
       </Card>
     </Link>
   );
-}
+});

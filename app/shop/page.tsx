@@ -5,6 +5,7 @@ import { Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/customer/ProductCard';
+import { ProductCardSkeleton } from '@/components/skeletons';
 import { useProducts } from '@/lib/api/products';
 
 export default function ProductsPage() {
@@ -22,11 +23,6 @@ export default function ProductsPage() {
   const products = response?.products || [];
   const totalPages = response?.totalPages || 1;
   const total = response?.total || 0;
-
-  // Log for debugging
-  if (error) {
-    console.error('Products fetch error:', error);
-  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -53,8 +49,8 @@ export default function ProductsPage() {
 
       {isLoading && (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {[...Array(8)].map((_, i) => (
-            <div key={i} className="h-96 animate-pulse rounded-lg bg-gray-100" />
+          {Array.from({ length: 8 }).map((_, i) => (
+            <ProductCardSkeleton key={i} />
           ))}
         </div>
       )}

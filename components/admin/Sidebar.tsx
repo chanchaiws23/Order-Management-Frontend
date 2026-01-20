@@ -1,5 +1,6 @@
 'use client';
 
+import { memo, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -28,9 +29,14 @@ const navigation = [
   { name: 'Settings', href: '/admin/settings', icon: Settings, requiredRole: 'ADMIN' },
 ];
 
-export function AdminSidebar() {
+export const AdminSidebar = memo(function AdminSidebar() {
   const pathname = usePathname();
   const { hasRole } = usePermissions();
+
+  const filteredNavigation = useMemo(
+    () => navigation.filter((item) => hasRole(item.requiredRole as any)),
+    [hasRole]
+  );
 
   return (
     <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
@@ -41,9 +47,7 @@ export function AdminSidebar() {
         </div>
         <div className="flex flex-1 flex-col overflow-y-auto">
           <nav className="flex-1 space-y-1 px-2 py-4">
-            {navigation.map((item) => {
-              if (!hasRole(item.requiredRole as any)) return null;
-
+            {filteredNavigation.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
@@ -71,4 +75,4 @@ export function AdminSidebar() {
       </div>
     </div>
   );
-}
+});

@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PasswordInput } from '@/components/ui/password-input';
 import {
   Card,
   CardContent,
@@ -103,20 +104,16 @@ export default function RegisterPage() {
               />
               {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Create a strong password"
-                {...register('password')}
-                disabled={isLoading}
-              />
-              {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
-              <p className="text-xs text-muted-foreground">
-                Must contain uppercase, lowercase, number, and special character
-              </p>
-            </div>
+            <PasswordInput
+              label="Password"
+              placeholder="Create a strong password"
+              {...register('password')}
+              disabled={isLoading}
+              error={errors.password?.message}
+              hint="Must contain uppercase, lowercase, number, and special character"
+              showStrengthIndicator
+              required
+            />
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={isLoading}>

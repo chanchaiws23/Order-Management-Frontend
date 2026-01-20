@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ShoppingCart, User, LogOut, Package } from 'lucide-react';
@@ -9,7 +9,7 @@ import { useAuthStore } from '@/lib/stores/authStore';
 import { useCart } from '@/lib/hooks/useCart';
 import { toast } from 'sonner';
 
-export function CustomerHeader() {
+export const CustomerHeader = memo(function CustomerHeader() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -21,11 +21,11 @@ export function CustomerHeader() {
     setMounted(true);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     logout();
     toast.success('Logged out successfully');
     router.push('/login');
-  };
+  }, [logout, router]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -92,4 +92,4 @@ export function CustomerHeader() {
       </div>
     </header>
   );
-}
+});
