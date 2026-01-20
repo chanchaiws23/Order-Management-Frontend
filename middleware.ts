@@ -14,21 +14,24 @@ export function middleware(request: NextRequest) {
     'camera=(), microphone=(), geolocation=()'
   );
 
-  // Content Security Policy
+  // Content Security Policy - Relaxed for Next.js development
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline';
-    style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data: https://images.unsplash.com https://via.placeholder.com https://picsum.photos;
-    font-src 'self';
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https:;
+    style-src 'self' 'unsafe-inline' https:;
+    img-src 'self' blob: data: https:;
+    font-src 'self' data: https:;
+    connect-src 'self' https://order-management-system-production-955f.up.railway.app https: http: ws: wss:;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    upgrade-insecure-requests;
   `.replace(/\s{2,}/g, ' ').trim();
 
-  response.headers.set('Content-Security-Policy', cspHeader);
+  // Only set CSP in production to avoid development issues
+  if (process.env.NODE_ENV === 'production') {
+    response.headers.set('Content-Security-Policy', cspHeader);
+  }
 
   return response;
 }

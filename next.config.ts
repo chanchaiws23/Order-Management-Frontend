@@ -5,22 +5,17 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
+        hostname: '**',
       },
-      {
-        protocol: 'https',
-        hostname: 'via.placeholder.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'picsum.photos',
-      },
-      // Add your CDN or image hosting domains here
-      // {
-      //   protocol: 'https',
-      //   hostname: 'your-cdn-domain.com',
-      // },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://order-management-system-production-955f.up.railway.app/api/:path*',
+      },
+    ];
   },
 };
 
