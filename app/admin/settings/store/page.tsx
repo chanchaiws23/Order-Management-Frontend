@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ArrowLeft, Save, Upload } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -48,7 +49,7 @@ export default function StoreSettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle>Basic Information</CardTitle>
-            <CardDescription>Your store's basic details</CardDescription>
+            <CardDescription>Your store&apos;s basic details</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -117,13 +118,18 @@ export default function StoreSettingsPage() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Store Logo</CardTitle>
-            <CardDescription>Upload your store's logo</CardDescription>
+            <CardDescription>Upload your store&apos;s logo</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-4">
-              <div className="w-24 h-24 border-2 border-dashed rounded-lg flex items-center justify-center bg-muted/50">
+              <div className="relative flex h-24 w-24 items-center justify-center rounded-lg border-2 border-dashed bg-muted/50">
                 {settings.logoUrl ? (
-                  <img src={settings.logoUrl} alt="Logo" className="w-full h-full object-contain rounded-lg" />
+                  <Image
+                    src={settings.logoUrl}
+                    alt="Logo"
+                    fill
+                    className="rounded-lg object-contain"
+                  />
                 ) : (
                   <Upload className="h-8 w-8 text-muted-foreground" />
                 )}
@@ -146,7 +152,7 @@ export default function StoreSettingsPage() {
 
       <div className="flex justify-end">
         <Button onClick={handleSave} disabled={isLoading}>
-          <Save className="h-4 w-4 mr-2" />
+          <Save className="mr-2 h-4 w-4" />
           {isLoading ? 'Saving...' : 'Save Settings'}
         </Button>
       </div>

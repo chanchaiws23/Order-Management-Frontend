@@ -45,11 +45,13 @@ export default function AdminOrdersPage() {
   const updateStatus = useUpdateOrderStatus();
 
   // Filter and pagination
-  const orders = allOrders?.filter((order: any) =>
-    order.id?.toLowerCase().includes(search.toLowerCase()) ||
-    order.customerName?.toLowerCase().includes(search.toLowerCase()) ||
-    order.customerEmail?.toLowerCase().includes(search.toLowerCase())
-  ) || [];
+  const orders =
+    allOrders?.filter(
+      (order: any) =>
+        order.id?.toLowerCase().includes(search.toLowerCase()) ||
+        order.customerName?.toLowerCase().includes(search.toLowerCase()) ||
+        order.customerEmail?.toLowerCase().includes(search.toLowerCase())
+    ) || [];
   const totalPages = Math.ceil(orders.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedOrders = orders.slice(startIndex, startIndex + ITEMS_PER_PAGE);
@@ -82,7 +84,7 @@ export default function AdminOrdersPage() {
       <Card>
         <CardHeader>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
             <Input
               placeholder="Search orders..."
               value={search}
@@ -95,15 +97,13 @@ export default function AdminOrdersPage() {
           {isLoading && (
             <div className="space-y-2">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="h-16 bg-gray-100 animate-pulse rounded" />
+                <div key={i} className="h-16 animate-pulse rounded bg-gray-100" />
               ))}
             </div>
           )}
 
           {orders && orders.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
-              No orders found
-            </div>
+            <div className="py-8 text-center text-muted-foreground">No orders found</div>
           )}
 
           {orders.length > 0 && (
@@ -111,38 +111,34 @@ export default function AdminOrdersPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium">Order ID</th>
-                    <th className="text-left py-3 px-4 font-medium">Customer</th>
-                    <th className="text-left py-3 px-4 font-medium">Date</th>
-                    <th className="text-left py-3 px-4 font-medium">Items</th>
-                    <th className="text-left py-3 px-4 font-medium">Total</th>
-                    <th className="text-left py-3 px-4 font-medium">Status</th>
-                    <th className="text-right py-3 px-4 font-medium">Actions</th>
+                    <th className="px-4 py-3 text-left font-medium">Order ID</th>
+                    <th className="px-4 py-3 text-left font-medium">Customer</th>
+                    <th className="px-4 py-3 text-left font-medium">Date</th>
+                    <th className="px-4 py-3 text-left font-medium">Items</th>
+                    <th className="px-4 py-3 text-left font-medium">Total</th>
+                    <th className="px-4 py-3 text-left font-medium">Status</th>
+                    <th className="px-4 py-3 text-right font-medium">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedOrders.map((order: any) => (
                     <tr key={order.id} className="border-b hover:bg-gray-50">
-                      <td className="py-3 px-4 font-mono text-sm">
-                        #{order.id?.slice(0, 8)}
-                      </td>
-                      <td className="py-3 px-4">
+                      <td className="px-4 py-3 font-mono text-sm">#{order.id?.slice(0, 8)}</td>
+                      <td className="px-4 py-3">
                         <div className="font-medium">{order.customerName}</div>
                         <div className="text-sm text-muted-foreground">{order.customerEmail}</div>
                       </td>
-                      <td className="py-3 px-4 text-sm">
-                        {formatDateTime(order.createdAt)}
-                      </td>
-                      <td className="py-3 px-4">{order.itemCount}</td>
-                      <td className="py-3 px-4 font-medium">
-                        {formatPrice(order.totalAmount)}
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusColors[order.status as keyof typeof statusColors] || 'bg-gray-100 text-gray-800'}`}>
+                      <td className="px-4 py-3 text-sm">{formatDateTime(order.createdAt)}</td>
+                      <td className="px-4 py-3">{order.itemCount}</td>
+                      <td className="px-4 py-3 font-medium">{formatPrice(order.totalAmount)}</td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${statusColors[order.status as keyof typeof statusColors] || 'bg-gray-100 text-gray-800'}`}
+                        >
                           {order.status}
                         </span>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="px-4 py-3">
                         <div className="flex items-center justify-end">
                           <Button variant="ghost" size="icon" onClick={() => handleOpenEdit(order)}>
                             <Eye className="h-4 w-4" />
@@ -158,22 +154,23 @@ export default function AdminOrdersPage() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-4 pt-4 border-t">
+            <div className="mt-4 flex items-center justify-between border-t pt-4">
               <div className="text-sm text-muted-foreground">
-                Showing {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, orders.length)} of {orders.length} orders
+                Showing {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, orders.length)} of{' '}
+                {orders.length} orders
               </div>
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Previous
                 </Button>
                 <div className="flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                     <Button
                       key={page}
                       variant={currentPage === page ? 'default' : 'outline'}
@@ -188,7 +185,7 @@ export default function AdminOrdersPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
                 >
                   Next
@@ -242,7 +239,7 @@ export default function AdminOrdersPage() {
               Cancel
             </Button>
             <Button onClick={handleUpdateStatus} disabled={updateStatus.isPending}>
-              {updateStatus.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {updateStatus.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Update Status
             </Button>
           </DialogFooter>

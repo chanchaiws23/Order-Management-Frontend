@@ -7,7 +7,7 @@
  */
 export function sanitizeInput(input: string): string {
   if (!input) return '';
-  
+
   return input
     .replace(/[<>]/g, '') // Remove < and >
     .trim();
@@ -50,14 +50,14 @@ export class RateLimiter {
   isAllowed(key: string): boolean {
     const now = Date.now();
     const attempts = this.attempts.get(key) || [];
-    
+
     // Filter out old attempts
-    const recentAttempts = attempts.filter(time => now - time < this.windowMs);
-    
+    const recentAttempts = attempts.filter((time) => now - time < this.windowMs);
+
     if (recentAttempts.length >= this.maxAttempts) {
       return false;
     }
-    
+
     recentAttempts.push(now);
     this.attempts.set(key, recentAttempts);
     return true;
@@ -81,7 +81,7 @@ export function generateSecureToken(length: number = 32): string {
       array[i] = Math.floor(Math.random() * 256);
     }
   }
-  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
 /**

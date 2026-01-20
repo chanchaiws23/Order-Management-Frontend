@@ -49,12 +49,12 @@ export default function AdminPaymentsPage() {
         <CardHeader>
           <CardTitle>Payment Transactions</CardTitle>
           <div className="relative mt-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
             <Input placeholder="Search transactions..." className="pl-10" />
           </div>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="py-8 text-center text-muted-foreground">
             No payment transactions found.
           </div>
         </CardContent>

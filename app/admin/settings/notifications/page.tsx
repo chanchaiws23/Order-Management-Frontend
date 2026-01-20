@@ -74,7 +74,10 @@ export default function NotificationSettingsPage() {
               <Checkbox
                 checked={settings.email.orderConfirmation}
                 onCheckedChange={(checked: boolean) =>
-                  setSettings({ ...settings, email: { ...settings.email, orderConfirmation: checked } })
+                  setSettings({
+                    ...settings,
+                    email: { ...settings.email, orderConfirmation: checked },
+                  })
                 }
               />
             </div>
@@ -92,7 +95,10 @@ export default function NotificationSettingsPage() {
               <Checkbox
                 checked={settings.email.orderDelivered}
                 onCheckedChange={(checked: boolean) =>
-                  setSettings({ ...settings, email: { ...settings.email, orderDelivered: checked } })
+                  setSettings({
+                    ...settings,
+                    email: { ...settings.email, orderDelivered: checked },
+                  })
                 }
               />
             </div>
@@ -101,7 +107,10 @@ export default function NotificationSettingsPage() {
               <Checkbox
                 checked={settings.email.orderCancelled}
                 onCheckedChange={(checked: boolean) =>
-                  setSettings({ ...settings, email: { ...settings.email, orderCancelled: checked } })
+                  setSettings({
+                    ...settings,
+                    email: { ...settings.email, orderCancelled: checked },
+                  })
                 }
               />
             </div>
@@ -198,7 +207,10 @@ export default function NotificationSettingsPage() {
                   id="smtpUsername"
                   value={settings.smtp.username}
                   onChange={(e) =>
-                    setSettings({ ...settings, smtp: { ...settings.smtp, username: e.target.value } })
+                    setSettings({
+                      ...settings,
+                      smtp: { ...settings.smtp, username: e.target.value },
+                    })
                   }
                   placeholder="your-email@gmail.com"
                 />
@@ -210,7 +222,10 @@ export default function NotificationSettingsPage() {
                   type="password"
                   value={settings.smtp.password}
                   onChange={(e) =>
-                    setSettings({ ...settings, smtp: { ...settings.smtp, password: e.target.value } })
+                    setSettings({
+                      ...settings,
+                      smtp: { ...settings.smtp, password: e.target.value },
+                    })
                   }
                   placeholder="••••••••"
                 />
@@ -222,7 +237,7 @@ export default function NotificationSettingsPage() {
 
       <div className="flex justify-end">
         <Button onClick={handleSave} disabled={isLoading}>
-          <Save className="h-4 w-4 mr-2" />
+          <Save className="mr-2 h-4 w-4" />
           {isLoading ? 'Saving...' : 'Save Settings'}
         </Button>
       </div>

@@ -1,7 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { Settings as SettingsIcon, Users, Shield, Store, Truck, CreditCard, Bell } from 'lucide-react';
+import {
+  Settings as SettingsIcon,
+  Users,
+  Shield,
+  Store,
+  Truck,
+  CreditCard,
+  Bell,
+} from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -20,9 +28,7 @@ export default function AdminSettingsPage() {
               <Users className="h-5 w-5 text-primary" />
               <CardTitle>User Management</CardTitle>
             </div>
-            <CardDescription>
-              Manage user accounts and permissions
-            </CardDescription>
+            <CardDescription>Manage user accounts and permissions</CardDescription>
           </CardHeader>
           <CardContent>
             <Link href="/admin/users">
@@ -37,9 +43,7 @@ export default function AdminSettingsPage() {
               <Shield className="h-5 w-5 text-primary" />
               <CardTitle>Role Management</CardTitle>
             </div>
-            <CardDescription>
-              Configure roles and permissions
-            </CardDescription>
+            <CardDescription>Configure roles and permissions</CardDescription>
           </CardHeader>
           <CardContent>
             <Link href="/admin/settings/roles">
@@ -54,9 +58,7 @@ export default function AdminSettingsPage() {
               <Store className="h-5 w-5 text-primary" />
               <CardTitle>Store Settings</CardTitle>
             </div>
-            <CardDescription>
-              Configure store name, logo, and contact info
-            </CardDescription>
+            <CardDescription>Configure store name, logo, and contact info</CardDescription>
           </CardHeader>
           <CardContent>
             <Link href="/admin/settings/store">
@@ -71,9 +73,7 @@ export default function AdminSettingsPage() {
               <Truck className="h-5 w-5 text-primary" />
               <CardTitle>Shipping Settings</CardTitle>
             </div>
-            <CardDescription>
-              Configure shipping rates and methods
-            </CardDescription>
+            <CardDescription>Configure shipping rates and methods</CardDescription>
           </CardHeader>
           <CardContent>
             <Link href="/admin/settings/shipping">
@@ -88,9 +88,7 @@ export default function AdminSettingsPage() {
               <CreditCard className="h-5 w-5 text-primary" />
               <CardTitle>Payment Settings</CardTitle>
             </div>
-            <CardDescription>
-              Configure payment methods and gateways
-            </CardDescription>
+            <CardDescription>Configure payment methods and gateways</CardDescription>
           </CardHeader>
           <CardContent>
             <Link href="/admin/settings/payment">
@@ -105,9 +103,7 @@ export default function AdminSettingsPage() {
               <Bell className="h-5 w-5 text-primary" />
               <CardTitle>Notification Settings</CardTitle>
             </div>
-            <CardDescription>
-              Configure email and push notifications
-            </CardDescription>
+            <CardDescription>Configure email and push notifications</CardDescription>
           </CardHeader>
           <CardContent>
             <Link href="/admin/settings/notifications">

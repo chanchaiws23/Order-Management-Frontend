@@ -4,14 +4,14 @@ import { Button } from '@/components/ui/button';
 
 export default function UnauthorizedPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full text-center">
-        <ShieldAlert className="h-24 w-24 mx-auto text-red-500 mb-6" />
-        <h1 className="text-4xl font-bold mb-2">Access Denied</h1>
-        <p className="text-muted-foreground mb-8">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-md text-center">
+        <ShieldAlert className="mx-auto mb-6 h-24 w-24 text-red-500" />
+        <h1 className="mb-2 text-4xl font-bold">Access Denied</h1>
+        <p className="mb-8 text-muted-foreground">
           You don&apos;t have permission to access this page.
         </p>
-        <div className="flex gap-4 justify-center">
+        <div className="flex justify-center gap-4">
           <Link href="/shop">
             <Button>Go to Home</Button>
           </Link>

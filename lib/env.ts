@@ -22,7 +22,7 @@ function validateEnv(): Env {
       const missingVars = error.errors.map((err) => err.path.join('.')).join(', ');
       throw new Error(
         `Missing or invalid environment variables: ${missingVars}\n` +
-        'Please check your .env.local file and ensure all required variables are set correctly.'
+          'Please check your .env.local file and ensure all required variables are set correctly.'
       );
     }
     throw error;

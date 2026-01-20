@@ -24,7 +24,7 @@ function OrdersContent() {
       <div className="container mx-auto px-4 py-8">
         <div className="space-y-4">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-32 bg-gray-100 animate-pulse rounded-lg" />
+            <div key={i} className="h-32 animate-pulse rounded-lg bg-gray-100" />
           ))}
         </div>
       </div>
@@ -34,12 +34,10 @@ function OrdersContent() {
   if (!orders || orders.length === 0) {
     return (
       <div className="container mx-auto px-4 py-16">
-        <div className="max-w-md mx-auto text-center">
-          <Package className="h-24 w-24 mx-auto text-muted-foreground mb-4" />
-          <h2 className="text-2xl font-bold mb-2">No orders yet</h2>
-          <p className="text-muted-foreground">
-            Your order history will appear here
-          </p>
+        <div className="mx-auto max-w-md text-center">
+          <Package className="mx-auto mb-4 h-24 w-24 text-muted-foreground" />
+          <h2 className="mb-2 text-2xl font-bold">No orders yet</h2>
+          <p className="text-muted-foreground">Your order history will appear here</p>
         </div>
       </div>
     );
@@ -47,7 +45,7 @@ function OrdersContent() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">My Orders</h1>
+      <h1 className="mb-8 text-3xl font-bold">My Orders</h1>
 
       <div className="space-y-4">
         {orders.map((order: any) => {
@@ -55,12 +53,12 @@ function OrdersContent() {
           const StatusIcon = status.icon;
           return (
             <Link key={order.id} href={`/my-orders/${order.id}`}>
-              <Card className="hover:border-primary transition-colors cursor-pointer">
+              <Card className="cursor-pointer transition-colors hover:border-primary">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">Order #{order.id.slice(0, 8)}</CardTitle>
                     <Badge className={status.color}>
-                      <StatusIcon className="h-3 w-3 mr-1" />
+                      <StatusIcon className="mr-1 h-3 w-3" />
                       {status.label}
                     </Badge>
                   </div>
@@ -74,7 +72,7 @@ function OrdersContent() {
                       <p className="text-sm text-muted-foreground">
                         {order.itemCount} items • {formatPrice(order.totalAmount)}
                       </p>
-                      <p className="text-sm text-muted-foreground capitalize">
+                      <p className="text-sm capitalize text-muted-foreground">
                         {order.paymentMethod.replace('_', ' ')}
                       </p>
                     </div>

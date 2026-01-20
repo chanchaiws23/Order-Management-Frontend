@@ -9,7 +9,14 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { useRegister } from '@/lib/api/auth';
 import { registerSchema, RegisterFormData } from '@/lib/utils/validators';
 import { UserPlus } from 'lucide-react';
@@ -44,15 +51,15 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <div className="flex items-center justify-center mb-4">
-            <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
+          <div className="mb-4 flex items-center justify-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
               <UserPlus className="h-6 w-6 text-white" />
             </div>
           </div>
-          <CardTitle className="text-2xl text-center">Create an account</CardTitle>
+          <CardTitle className="text-center text-2xl">Create an account</CardTitle>
           <CardDescription className="text-center">
             Enter your information to get started
           </CardDescription>
@@ -94,9 +101,7 @@ export default function RegisterPage() {
                 {...register('email')}
                 disabled={isLoading}
               />
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
-              )}
+              {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
@@ -107,9 +112,7 @@ export default function RegisterPage() {
                 {...register('password')}
                 disabled={isLoading}
               />
-              {errors.password && (
-                <p className="text-sm text-red-500">{errors.password.message}</p>
-              )}
+              {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
               <p className="text-xs text-muted-foreground">
                 Must contain uppercase, lowercase, number, and special character
               </p>
@@ -119,7 +122,7 @@ export default function RegisterPage() {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? 'Creating account...' : 'Create account'}
             </Button>
-            <div className="text-sm text-center text-muted-foreground">
+            <div className="text-center text-sm text-muted-foreground">
               Already have an account?{' '}
               <Link href="/login" className="text-primary hover:underline">
                 Sign in

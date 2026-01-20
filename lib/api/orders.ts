@@ -9,14 +9,12 @@ export const orderApi = {
   getOrders: (params?: { status?: string; page?: number; limit?: number }) =>
     apiClient.get<{ success: boolean; orders: Order[] }>('/api/orders', { params }),
 
-  getOrder: (id: string) =>
-    apiClient.get<{ success: boolean; order: Order }>(`/api/orders/${id}`),
+  getOrder: (id: string) => apiClient.get<{ success: boolean; order: Order }>(`/api/orders/${id}`),
 
   updateOrderStatus: (id: string, status: string) =>
     apiClient.patch(`/api/orders/${id}/status`, { status }),
 
-  cancelOrder: (id: string) =>
-    apiClient.patch(`/api/orders/${id}/cancel`),
+  cancelOrder: (id: string) => apiClient.patch(`/api/orders/${id}/cancel`),
 };
 
 export function useCreateOrder() {
@@ -36,7 +34,7 @@ export function useOrders(params?: { status?: string; page?: number; limit?: num
     queryFn: async () => {
       const { data } = await orderApi.getOrders(params);
       const apiData = data as any;
-      
+
       // Handle different response structures
       if (apiData.orders && Array.isArray(apiData.orders)) {
         return apiData.orders;
@@ -50,7 +48,7 @@ export function useOrders(params?: { status?: string; page?: number; limit?: num
       if (Array.isArray(apiData)) {
         return apiData;
       }
-      
+
       return [];
     },
   });

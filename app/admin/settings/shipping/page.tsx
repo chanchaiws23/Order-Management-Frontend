@@ -94,14 +94,14 @@ export default function ShippingSettingsPage() {
             <CardDescription>Configure available shipping options</CardDescription>
           </div>
           <Button onClick={handleAddMethod} size="sm">
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             Add Method
           </Button>
         </CardHeader>
         <CardContent className="space-y-4">
           {methods.map((method) => (
-            <div key={method.id} className="flex items-center gap-4 p-4 border rounded-lg">
-              <div className="flex-1 grid grid-cols-4 gap-4">
+            <div key={method.id} className="flex items-center gap-4 rounded-lg border p-4">
+              <div className="grid flex-1 grid-cols-4 gap-4">
                 <div className="space-y-1">
                   <Label className="text-xs text-muted-foreground">Name</Label>
                   <Input
@@ -129,7 +129,9 @@ export default function ShippingSettingsPage() {
                   <div className="pt-2">
                     <Checkbox
                       checked={method.isActive}
-                      onCheckedChange={(checked: boolean) => handleUpdateMethod(method.id, 'isActive', checked)}
+                      onCheckedChange={(checked: boolean) =>
+                        handleUpdateMethod(method.id, 'isActive', checked)
+                      }
                     />
                   </div>
                 </div>
@@ -149,7 +151,7 @@ export default function ShippingSettingsPage() {
 
       <div className="flex justify-end">
         <Button onClick={handleSave} disabled={isLoading}>
-          <Save className="h-4 w-4 mr-2" />
+          <Save className="mr-2 h-4 w-4" />
           {isLoading ? 'Saving...' : 'Save Settings'}
         </Button>
       </div>

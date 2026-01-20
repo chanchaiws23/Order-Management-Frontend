@@ -41,8 +41,15 @@ export const adminApi = {
   getAllOrders: (params?: { status?: string; page?: number; limit?: number; search?: string }) =>
     apiClient.get<AdminOrdersResponse>('/api/admin/orders', { params }),
 
-  getAllProducts: (params?: { page?: number; limit?: number; search?: string; category?: string }) =>
-    apiClient.get<{ success: boolean; products: Product[]; total: number }>('/api/admin/products', { params }),
+  getAllProducts: (params?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    category?: string;
+  }) =>
+    apiClient.get<{ success: boolean; products: Product[]; total: number }>('/api/admin/products', {
+      params,
+    }),
 
   getAllCustomers: (params?: { page?: number; limit?: number; search?: string }) =>
     apiClient.get<AdminCustomersResponse>('/api/admin/customers', { params }),
@@ -86,7 +93,12 @@ export function useRecentOrders(limit: number = 5) {
   });
 }
 
-export function useAdminOrders(params?: { status?: string; page?: number; limit?: number; search?: string }) {
+export function useAdminOrders(params?: {
+  status?: string;
+  page?: number;
+  limit?: number;
+  search?: string;
+}) {
   return useQuery({
     queryKey: ['admin', 'orders', params],
     queryFn: async () => {
@@ -100,7 +112,12 @@ export function useAdminOrders(params?: { status?: string; page?: number; limit?
   });
 }
 
-export function useAdminProducts(params?: { page?: number; limit?: number; search?: string; category?: string }) {
+export function useAdminProducts(params?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+  category?: string;
+}) {
   return useQuery({
     queryKey: ['admin', 'products', params],
     queryFn: async () => {

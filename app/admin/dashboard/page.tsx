@@ -13,7 +13,9 @@ export default function DashboardPage() {
     {
       title: 'Total Revenue',
       value: stats ? formatPrice(stats.totalRevenue) : '฿0',
-      change: stats ? `${stats.revenueChange >= 0 ? '+' : ''}${stats.revenueChange}% from last month` : 'Loading...',
+      change: stats
+        ? `${stats.revenueChange >= 0 ? '+' : ''}${stats.revenueChange}% from last month`
+        : 'Loading...',
       icon: DollarSign,
       color: 'text-green-600',
       bgColor: 'bg-green-100',
@@ -21,7 +23,9 @@ export default function DashboardPage() {
     {
       title: 'Orders',
       value: stats?.totalOrders?.toLocaleString() || '0',
-      change: stats ? `${stats.ordersChange >= 0 ? '+' : ''}${stats.ordersChange} from last month` : 'Loading...',
+      change: stats
+        ? `${stats.ordersChange >= 0 ? '+' : ''}${stats.ordersChange} from last month`
+        : 'Loading...',
       icon: ShoppingCart,
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
@@ -29,7 +33,9 @@ export default function DashboardPage() {
     {
       title: 'Products',
       value: stats?.totalProducts?.toLocaleString() || '0',
-      change: stats ? `${stats.productsChange >= 0 ? '+' : ''}${stats.productsChange} from last month` : 'Loading...',
+      change: stats
+        ? `${stats.productsChange >= 0 ? '+' : ''}${stats.productsChange} from last month`
+        : 'Loading...',
       icon: Package,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
@@ -37,7 +43,9 @@ export default function DashboardPage() {
     {
       title: 'Customers',
       value: stats?.totalCustomers?.toLocaleString() || '0',
-      change: stats ? `${stats.customersChange >= 0 ? '+' : ''}${stats.customersChange} from last month` : 'Loading...',
+      change: stats
+        ? `${stats.customersChange >= 0 ? '+' : ''}${stats.customersChange} from last month`
+        : 'Loading...',
       icon: Users,
       color: 'text-orange-600',
       bgColor: 'bg-orange-100',
@@ -61,7 +69,7 @@ export default function DashboardPage() {
             <Card key={stat.title}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                <div className={`p-2 rounded-lg ${stat.bgColor}`}>
+                <div className={`rounded-lg p-2 ${stat.bgColor}`}>
                   <stat.icon className={`h-4 w-4 ${stat.color}`} />
                 </div>
               </CardHeader>
@@ -87,22 +95,25 @@ export default function DashboardPage() {
             ) : recentOrders && recentOrders.length > 0 ? (
               <div className="space-y-4">
                 {recentOrders.map((order) => (
-                  <div key={order.id} className="flex items-center justify-between border-b pb-3 last:border-0">
+                  <div
+                    key={order.id}
+                    className="flex items-center justify-between border-b pb-3 last:border-0"
+                  >
                     <div>
                       <p className="font-medium">Order #{order.id.slice(0, 8)}</p>
                       <p className="text-sm text-muted-foreground">{order.customerName}</p>
                     </div>
                     <div className="text-right">
                       <p className="font-medium">{formatPrice(order.totalAmount)}</p>
-                      <p className="text-xs text-muted-foreground">{formatDateTime(order.createdAt)}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatDateTime(order.createdAt)}
+                      </p>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                No recent orders
-              </p>
+              <p className="py-4 text-center text-sm text-muted-foreground">No recent orders</p>
             )}
           </CardContent>
         </Card>

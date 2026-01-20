@@ -12,7 +12,7 @@ describe('AuthStore', () => {
 
   it('should initialize with default state', () => {
     const { result } = renderHook(() => useAuthStore());
-    
+
     expect(result.current.user).toBeNull();
     expect(result.current.accessToken).toBeNull();
     expect(result.current.isAuthenticated).toBe(false);
@@ -20,7 +20,7 @@ describe('AuthStore', () => {
 
   it('should login user', () => {
     const { result } = renderHook(() => useAuthStore());
-    
+
     const mockUser: User = {
       id: '1',
       email: 'test@example.com',
@@ -41,7 +41,7 @@ describe('AuthStore', () => {
 
   it('should logout user', () => {
     const { result } = renderHook(() => useAuthStore());
-    
+
     const mockUser: User = {
       id: '1',
       email: 'test@example.com',
@@ -62,7 +62,7 @@ describe('AuthStore', () => {
 
   it('should update user', () => {
     const { result } = renderHook(() => useAuthStore());
-    
+
     const mockUser: User = {
       id: '1',
       email: 'test@example.com',
@@ -89,7 +89,7 @@ describe('AuthStore', () => {
 
   it('should set access token', () => {
     const { result } = renderHook(() => useAuthStore());
-    
+
     act(() => {
       result.current.setAccessToken('new-token');
     });

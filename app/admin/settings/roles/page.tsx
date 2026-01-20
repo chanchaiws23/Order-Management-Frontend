@@ -19,7 +19,13 @@ const roles = [
     name: 'ADMIN',
     description: 'Administrative access to manage orders, products, and users',
     level: 80,
-    permissions: ['manage_orders', 'manage_products', 'manage_users', 'manage_coupons', 'view_reports'],
+    permissions: [
+      'manage_orders',
+      'manage_products',
+      'manage_users',
+      'manage_coupons',
+      'view_reports',
+    ],
     color: 'bg-orange-500',
   },
   {
@@ -61,7 +67,7 @@ const allPermissions = [
 export default function RoleManagementPage() {
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
 
-  const hasPermission = (role: typeof roles[0], permission: string) => {
+  const hasPermission = (role: (typeof roles)[0], permission: string) => {
     return role.permissions.includes('all') || role.permissions.includes(permission);
   };
 
@@ -90,14 +96,14 @@ export default function RoleManagementPage() {
             {roles.map((role) => (
               <div
                 key={role.name}
-                className={`p-4 rounded-lg border cursor-pointer transition-colors ${
+                className={`cursor-pointer rounded-lg border p-4 transition-colors ${
                   selectedRole === role.name ? 'border-primary bg-primary/5' : 'hover:bg-muted/50'
                 }`}
                 onClick={() => setSelectedRole(role.name)}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full ${role.color}`} />
+                    <div className={`h-3 w-3 rounded-full ${role.color}`} />
                     <div>
                       <p className="font-medium">{role.name}</p>
                       <p className="text-sm text-muted-foreground">{role.description}</p>
@@ -117,7 +123,9 @@ export default function RoleManagementPage() {
               {selectedRole ? `${selectedRole} Permissions` : 'Permissions Matrix'}
             </CardTitle>
             <CardDescription>
-              {selectedRole ? 'Permissions granted to this role' : 'Select a role to view permissions'}
+              {selectedRole
+                ? 'Permissions granted to this role'
+                : 'Select a role to view permissions'}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -129,7 +137,7 @@ export default function RoleManagementPage() {
                   return (
                     <div
                       key={permission.key}
-                      className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
+                      className="flex items-center justify-between rounded-lg bg-muted/30 p-3"
                     >
                       <span className="text-sm">{permission.label}</span>
                       {has ? (
@@ -143,7 +151,7 @@ export default function RoleManagementPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-                <Shield className="h-12 w-12 mb-4" />
+                <Shield className="mb-4 h-12 w-12" />
                 <p>Select a role to view its permissions</p>
               </div>
             )}
@@ -154,10 +162,12 @@ export default function RoleManagementPage() {
       <Card>
         <CardHeader>
           <CardTitle>Role Hierarchy</CardTitle>
-          <CardDescription>Higher level roles inherit permissions from lower levels</CardDescription>
+          <CardDescription>
+            Higher level roles inherit permissions from lower levels
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex flex-wrap items-center gap-2">
             {roles.map((role, index) => (
               <div key={role.name} className="flex items-center gap-2">
                 <Badge className={role.color}>{role.name}</Badge>

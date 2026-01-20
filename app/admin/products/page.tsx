@@ -15,7 +15,12 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { useAllProducts, useDeleteProduct, useCreateProduct, useUpdateProduct } from '@/lib/api/products';
+import {
+  useAllProducts,
+  useDeleteProduct,
+  useCreateProduct,
+  useUpdateProduct,
+} from '@/lib/api/products';
 import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -47,9 +52,13 @@ export default function AdminProductsPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [formData, setFormData] = useState<ProductFormData>(defaultFormData);
-  
-  const { data: productsData, isLoading } = useAllProducts({ search, page: currentPage, limit: ITEMS_PER_PAGE });
-  
+
+  const { data: productsData, isLoading } = useAllProducts({
+    search,
+    page: currentPage,
+    limit: ITEMS_PER_PAGE,
+  });
+
   // Use pagination info from API
   const products = productsData?.products || [];
   const totalPages = productsData?.totalPages || 1;
@@ -61,7 +70,7 @@ export default function AdminProductsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this product?')) return;
-    
+
     try {
       await deleteProduct.mutateAsync(id);
       toast.success('Product deleted successfully');
@@ -144,7 +153,7 @@ export default function AdminProductsPage() {
         <CardHeader>
           <div className="flex items-center gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
               <Input
                 placeholder="Search products..."
                 value={search}
@@ -158,15 +167,13 @@ export default function AdminProductsPage() {
           {isLoading && (
             <div className="space-y-2">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="h-16 bg-gray-100 animate-pulse rounded" />
+                <div key={i} className="h-16 animate-pulse rounded bg-gray-100" />
               ))}
             </div>
           )}
 
           {products.length === 0 && !isLoading && (
-            <div className="text-center py-8 text-muted-foreground">
-              No products found
-            </div>
+            <div className="py-8 text-center text-muted-foreground">No products found</div>
           )}
 
           {products.length > 0 && (
@@ -174,42 +181,52 @@ export default function AdminProductsPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium">Product</th>
-                    <th className="text-left py-3 px-4 font-medium">SKU</th>
-                    <th className="text-left py-3 px-4 font-medium">Price</th>
-                    <th className="text-left py-3 px-4 font-medium">Stock</th>
-                    <th className="text-left py-3 px-4 font-medium">Status</th>
-                    <th className="text-right py-3 px-4 font-medium">Actions</th>
+                    <th className="px-4 py-3 text-left font-medium">Product</th>
+                    <th className="px-4 py-3 text-left font-medium">SKU</th>
+                    <th className="px-4 py-3 text-left font-medium">Price</th>
+                    <th className="px-4 py-3 text-left font-medium">Stock</th>
+                    <th className="px-4 py-3 text-left font-medium">Status</th>
+                    <th className="px-4 py-3 text-right font-medium">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {products.map((product: any) => (
                     <tr key={product.id} className="border-b hover:bg-gray-50">
-                      <td className="py-3 px-4">
+                      <td className="px-4 py-3">
                         <div className="font-medium">{product.name}</div>
                         <div className="text-sm text-muted-foreground">{product.categoryName}</div>
                       </td>
-                      <td className="py-3 px-4 text-sm">{product.sku}</td>
-                      <td className="py-3 px-4 font-medium">{formatPrice(product.price)}</td>
-                      <td className="py-3 px-4">
-                        <span className={product.stockQuantity > 0 ? 'text-green-600' : 'text-red-600'}>
+                      <td className="px-4 py-3 text-sm">{product.sku}</td>
+                      <td className="px-4 py-3 font-medium">{formatPrice(product.price)}</td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={product.stockQuantity > 0 ? 'text-green-600' : 'text-red-600'}
+                        >
                           {product.stockQuantity}
                         </span>
                       </td>
-                      <td className="py-3 px-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          product.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                        }`}>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                            product.isActive
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-gray-100 text-gray-800'
+                          }`}
+                        >
                           {product.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="icon" onClick={() => handleOpenEdit(product)}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleOpenEdit(product)}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="icon"
                             onClick={() => handleDelete(product.id)}
                           >
@@ -226,22 +243,23 @@ export default function AdminProductsPage() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-4 pt-4 border-t">
+            <div className="mt-4 flex items-center justify-between border-t pt-4">
               <div className="text-sm text-muted-foreground">
-                Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, total)} of {total} products
+                Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1}-
+                {Math.min(currentPage * ITEMS_PER_PAGE, total)} of {total} products
               </div>
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Previous
                 </Button>
                 <div className="flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                     <Button
                       key={page}
                       variant={currentPage === page ? 'default' : 'outline'}
@@ -256,7 +274,7 @@ export default function AdminProductsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
                 >
                   Next
@@ -274,7 +292,7 @@ export default function AdminProductsPage() {
           <DialogHeader>
             <DialogTitle>{editingProduct ? 'Edit Product' : 'Add New Product'}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
+          <div className="max-h-[60vh] space-y-4 overflow-y-auto py-4">
             <div className="space-y-2">
               <Label htmlFor="name">Product Name *</Label>
               <Input
@@ -311,7 +329,9 @@ export default function AdminProductsPage() {
                   type="number"
                   min="0"
                   value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -321,7 +341,9 @@ export default function AdminProductsPage() {
                   type="number"
                   min="0"
                   value={formData.stockQuantity}
-                  onChange={(e) => setFormData({ ...formData, stockQuantity: parseInt(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, stockQuantity: parseInt(e.target.value) || 0 })
+                  }
                 />
               </div>
             </div>
@@ -340,7 +362,9 @@ export default function AdminProductsPage() {
                 checked={formData.isActive}
                 onCheckedChange={(checked) => setFormData({ ...formData, isActive: !!checked })}
               />
-              <Label htmlFor="isActive" className="cursor-pointer">Product is active</Label>
+              <Label htmlFor="isActive" className="cursor-pointer">
+                Product is active
+              </Label>
             </div>
           </div>
           <DialogFooter>
@@ -348,7 +372,7 @@ export default function AdminProductsPage() {
               Cancel
             </Button>
             <Button onClick={handleSubmit} disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {editingProduct ? 'Update Product' : 'Create Product'}
             </Button>
           </DialogFooter>

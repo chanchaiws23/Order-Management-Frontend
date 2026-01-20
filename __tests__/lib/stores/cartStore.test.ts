@@ -30,7 +30,7 @@ describe('CartStore', () => {
 
   it('should initialize with empty cart', () => {
     const { result } = renderHook(() => useCartStore());
-    
+
     expect(result.current.items).toEqual([]);
     expect(result.current.getTotalItems()).toBe(0);
     expect(result.current.getTotalPrice()).toBe(0);
@@ -38,7 +38,7 @@ describe('CartStore', () => {
 
   it('should add item to cart', () => {
     const { result } = renderHook(() => useCartStore());
-    
+
     act(() => {
       result.current.addItem(mockProduct, 2);
     });
@@ -50,7 +50,7 @@ describe('CartStore', () => {
 
   it('should increase quantity when adding existing item', () => {
     const { result } = renderHook(() => useCartStore());
-    
+
     act(() => {
       result.current.addItem(mockProduct, 1);
       result.current.addItem(mockProduct, 2);
@@ -62,7 +62,7 @@ describe('CartStore', () => {
 
   it('should remove item from cart', () => {
     const { result } = renderHook(() => useCartStore());
-    
+
     act(() => {
       result.current.addItem(mockProduct);
       result.current.removeItem(mockProduct.id);
@@ -73,7 +73,7 @@ describe('CartStore', () => {
 
   it('should update item quantity', () => {
     const { result } = renderHook(() => useCartStore());
-    
+
     act(() => {
       result.current.addItem(mockProduct, 1);
       result.current.updateQuantity(mockProduct.id, 5);
@@ -84,7 +84,7 @@ describe('CartStore', () => {
 
   it('should calculate total items correctly', () => {
     const { result } = renderHook(() => useCartStore());
-    
+
     act(() => {
       result.current.addItem(mockProduct, 3);
       result.current.addItem({ ...mockProduct, id: '2' }, 2);
@@ -95,7 +95,7 @@ describe('CartStore', () => {
 
   it('should calculate total price correctly', () => {
     const { result } = renderHook(() => useCartStore());
-    
+
     act(() => {
       result.current.addItem(mockProduct, 2); // 100 * 2 = 200
     });
@@ -105,7 +105,7 @@ describe('CartStore', () => {
 
   it('should clear cart', () => {
     const { result } = renderHook(() => useCartStore());
-    
+
     act(() => {
       result.current.addItem(mockProduct);
       result.current.clearCart();

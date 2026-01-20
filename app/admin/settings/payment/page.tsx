@@ -15,7 +15,12 @@ export default function PaymentSettingsPage() {
   const [settings, setSettings] = useState({
     creditCard: { enabled: true, testMode: true },
     paypal: { enabled: true, clientId: '', testMode: true },
-    bankTransfer: { enabled: true, bankName: 'Bangkok Bank', accountNumber: '123-456-7890', accountName: 'My Store Co., Ltd.' },
+    bankTransfer: {
+      enabled: true,
+      bankName: 'Bangkok Bank',
+      accountNumber: '123-456-7890',
+      accountName: 'My Store Co., Ltd.',
+    },
   });
 
   const handleSave = async () => {
@@ -53,7 +58,10 @@ export default function PaymentSettingsPage() {
               <Checkbox
                 checked={settings.creditCard.enabled}
                 onCheckedChange={(checked: boolean) =>
-                  setSettings({ ...settings, creditCard: { ...settings.creditCard, enabled: checked } })
+                  setSettings({
+                    ...settings,
+                    creditCard: { ...settings.creditCard, enabled: checked },
+                  })
                 }
               />
             </div>
@@ -65,7 +73,10 @@ export default function PaymentSettingsPage() {
                   id="ccTestMode"
                   checked={settings.creditCard.testMode}
                   onCheckedChange={(checked: boolean) =>
-                    setSettings({ ...settings, creditCard: { ...settings.creditCard, testMode: checked } })
+                    setSettings({
+                      ...settings,
+                      creditCard: { ...settings.creditCard, testMode: checked },
+                    })
                   }
                 />
                 <Label htmlFor="ccTestMode">Test Mode (No real transactions)</Label>
@@ -100,7 +111,10 @@ export default function PaymentSettingsPage() {
                   id="paypalClientId"
                   value={settings.paypal.clientId}
                   onChange={(e) =>
-                    setSettings({ ...settings, paypal: { ...settings.paypal, clientId: e.target.value } })
+                    setSettings({
+                      ...settings,
+                      paypal: { ...settings.paypal, clientId: e.target.value },
+                    })
                   }
                   placeholder="Enter your PayPal Client ID"
                 />
@@ -132,7 +146,10 @@ export default function PaymentSettingsPage() {
               <Checkbox
                 checked={settings.bankTransfer.enabled}
                 onCheckedChange={(checked: boolean) =>
-                  setSettings({ ...settings, bankTransfer: { ...settings.bankTransfer, enabled: checked } })
+                  setSettings({
+                    ...settings,
+                    bankTransfer: { ...settings.bankTransfer, enabled: checked },
+                  })
                 }
               />
             </div>
@@ -146,7 +163,10 @@ export default function PaymentSettingsPage() {
                     id="bankName"
                     value={settings.bankTransfer.bankName}
                     onChange={(e) =>
-                      setSettings({ ...settings, bankTransfer: { ...settings.bankTransfer, bankName: e.target.value } })
+                      setSettings({
+                        ...settings,
+                        bankTransfer: { ...settings.bankTransfer, bankName: e.target.value },
+                      })
                     }
                   />
                 </div>
@@ -156,7 +176,10 @@ export default function PaymentSettingsPage() {
                     id="accountNumber"
                     value={settings.bankTransfer.accountNumber}
                     onChange={(e) =>
-                      setSettings({ ...settings, bankTransfer: { ...settings.bankTransfer, accountNumber: e.target.value } })
+                      setSettings({
+                        ...settings,
+                        bankTransfer: { ...settings.bankTransfer, accountNumber: e.target.value },
+                      })
                     }
                   />
                 </div>
@@ -166,7 +189,10 @@ export default function PaymentSettingsPage() {
                     id="accountName"
                     value={settings.bankTransfer.accountName}
                     onChange={(e) =>
-                      setSettings({ ...settings, bankTransfer: { ...settings.bankTransfer, accountName: e.target.value } })
+                      setSettings({
+                        ...settings,
+                        bankTransfer: { ...settings.bankTransfer, accountName: e.target.value },
+                      })
                     }
                   />
                 </div>
@@ -178,7 +204,7 @@ export default function PaymentSettingsPage() {
 
       <div className="flex justify-end">
         <Button onClick={handleSave} disabled={isLoading}>
-          <Save className="h-4 w-4 mr-2" />
+          <Save className="mr-2 h-4 w-4" />
           {isLoading ? 'Saving...' : 'Save Settings'}
         </Button>
       </div>

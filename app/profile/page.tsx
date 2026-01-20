@@ -90,9 +90,9 @@ function ProfileContent() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">My Profile</h1>
+        <h1 className="mb-2 text-3xl font-bold">My Profile</h1>
         <p className="text-muted-foreground">Manage your account information</p>
       </div>
 
@@ -107,14 +107,14 @@ function ProfileContent() {
               </div>
               {!isEditing && (
                 <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
-                  <Edit className="h-4 w-4 mr-2" />
+                  <Edit className="mr-2 h-4 w-4" />
                   Edit
                 </Button>
               )}
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
                 <Input
@@ -149,11 +149,11 @@ function ProfileContent() {
             {isEditing && (
               <div className="flex gap-2 pt-4">
                 <Button onClick={handleSave}>
-                  <Save className="h-4 w-4 mr-2" />
+                  <Save className="mr-2 h-4 w-4" />
                   Save Changes
                 </Button>
                 <Button variant="outline" onClick={handleCancel}>
-                  <X className="h-4 w-4 mr-2" />
+                  <X className="mr-2 h-4 w-4" />
                   Cancel
                 </Button>
               </div>
@@ -168,7 +168,7 @@ function ProfileContent() {
             <CardDescription>View your account details</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-4">
               <User className="h-5 w-5 text-muted-foreground" />
               <div>
                 <p className="text-sm font-medium">User ID</p>
@@ -176,7 +176,7 @@ function ProfileContent() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-4">
               <Mail className="h-5 w-5 text-muted-foreground" />
               <div>
                 <p className="text-sm font-medium">Email Address</p>
@@ -184,12 +184,12 @@ function ProfileContent() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-4">
               <Shield className="h-5 w-5 text-muted-foreground" />
               <div>
                 <p className="text-sm font-medium">Account Role</p>
                 <p className="text-sm">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-white">
+                  <span className="inline-flex items-center rounded-full bg-primary px-2.5 py-0.5 text-xs font-medium text-white">
                     {user.role}
                   </span>
                 </p>
@@ -206,7 +206,7 @@ function ProfileContent() {
           </CardHeader>
           <CardContent>
             <Button variant="outline" onClick={() => setIsPasswordDialogOpen(true)}>
-              <Lock className="h-4 w-4 mr-2" />
+              <Lock className="mr-2 h-4 w-4" />
               Change Password
             </Button>
           </CardContent>
@@ -226,7 +226,9 @@ function ProfileContent() {
                 id="currentPassword"
                 type="password"
                 value={passwordData.currentPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                onChange={(e) =>
+                  setPasswordData({ ...passwordData, currentPassword: e.target.value })
+                }
                 placeholder="Enter current password"
               />
             </div>
@@ -246,7 +248,9 @@ function ProfileContent() {
                 id="confirmPassword"
                 type="password"
                 value={passwordData.confirmPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                onChange={(e) =>
+                  setPasswordData({ ...passwordData, confirmPassword: e.target.value })
+                }
                 placeholder="Confirm new password"
               />
             </div>
@@ -256,9 +260,7 @@ function ProfileContent() {
               Cancel
             </Button>
             <Button onClick={handleChangePassword} disabled={changePassword.isPending}>
-              {changePassword.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              ) : null}
+              {changePassword.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Change Password
             </Button>
           </DialogFooter>

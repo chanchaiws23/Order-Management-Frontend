@@ -16,7 +16,13 @@ export const productApi = {
     apiClient.get<{ success: boolean; products: Product[] }>('/api/products', { params }),
 
   getAllProducts: (params?: ProductFilters) =>
-    apiClient.get<{ success: boolean; data: Product[]; total: number; totalPages: number; page: number }>('/api/products/all', { params }),
+    apiClient.get<{
+      success: boolean;
+      data: Product[];
+      total: number;
+      totalPages: number;
+      page: number;
+    }>('/api/products/all', { params }),
 
   getProduct: (id: string) =>
     apiClient.get<{ success: boolean; product: Product }>(`/api/products/${id}`),
@@ -33,8 +39,7 @@ export const productApi = {
   updateProduct: (id: string, data: Partial<Product>) =>
     apiClient.put<{ success: boolean; product: Product }>(`/api/products/${id}`, data),
 
-  deleteProduct: (id: string) =>
-    apiClient.delete(`/api/products/${id}`),
+  deleteProduct: (id: string) => apiClient.delete(`/api/products/${id}`),
 
   updateStock: (id: string, quantity: number) =>
     apiClient.patch(`/api/products/${id}/stock`, { quantity }),
@@ -53,7 +58,7 @@ export function useProducts(filters?: ProductFilters) {
     queryFn: async () => {
       const { data } = await productApi.getProducts(filters);
       const apiData = data as any;
-      
+
       // Handle different response structures and extract pagination info
       let products: Product[] = [];
       let total = 0;
@@ -86,7 +91,7 @@ export function useProducts(filters?: ProductFilters) {
         products = apiData;
         total = products.length;
       }
-      
+
       return { products, total, totalPages, page } as ProductsResponse;
     },
   });
@@ -98,12 +103,15 @@ export function useAllProducts(filters?: ProductFilters) {
     queryFn: async () => {
       const { data } = await productApi.getAllProducts(filters);
       const apiData = data as any;
-      
+
       const products = apiData.data || apiData.products || [];
       const total = apiData.total || apiData.pagination?.total || products.length;
-      const totalPages = apiData.totalPages || apiData.pagination?.totalPages || Math.ceil(total / (filters?.limit || 10));
+      const totalPages =
+        apiData.totalPages ||
+        apiData.pagination?.totalPages ||
+        Math.ceil(total / (filters?.limit || 10));
       const page = apiData.page || apiData.pagination?.page || 1;
-      
+
       return { products, total, totalPages, page } as ProductsResponse;
     },
   });
@@ -115,7 +123,7 @@ export function useProduct(id: string) {
     queryFn: async () => {
       const response = await productApi.getProduct(id);
       const apiData = response.data as any;
-      
+
       // API returns { success: true, data: {...} }
       if (apiData.data) {
         return apiData.data;

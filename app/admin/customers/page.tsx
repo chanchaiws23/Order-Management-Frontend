@@ -50,7 +50,7 @@ export default function AdminCustomersPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this customer?')) return;
-    
+
     try {
       await deleteCustomer.mutateAsync(id);
       toast.success('Customer deleted successfully');
@@ -93,9 +93,9 @@ export default function AdminCustomersPage() {
         <CardHeader>
           <CardTitle>Customer List</CardTitle>
           <div className="relative mt-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search customers..." 
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+            <Input
+              placeholder="Search customers..."
               className="pl-10"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -110,9 +110,7 @@ export default function AdminCustomersPage() {
           )}
 
           {!isLoading && customers.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
-              No customers found
-            </div>
+            <div className="py-8 text-center text-muted-foreground">No customers found</div>
           )}
 
           {customers.length > 0 && (
@@ -120,40 +118,40 @@ export default function AdminCustomersPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium">Customer</th>
-                    <th className="text-left py-3 px-4 font-medium">Email</th>
-                    <th className="text-left py-3 px-4 font-medium">Phone</th>
-                    <th className="text-left py-3 px-4 font-medium">Joined</th>
-                    <th className="text-right py-3 px-4 font-medium">Actions</th>
+                    <th className="px-4 py-3 text-left font-medium">Customer</th>
+                    <th className="px-4 py-3 text-left font-medium">Email</th>
+                    <th className="px-4 py-3 text-left font-medium">Phone</th>
+                    <th className="px-4 py-3 text-left font-medium">Joined</th>
+                    <th className="px-4 py-3 text-right font-medium">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedCustomers.map((customer: any) => (
                     <tr key={customer.id} className="border-b hover:bg-gray-50">
-                      <td className="py-3 px-4">
+                      <td className="px-4 py-3">
                         <div className="font-medium">
                           {customer.firstName} {customer.lastName}
                         </div>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="px-4 py-3">
                         <div className="flex items-center gap-2 text-sm">
                           <Mail className="h-4 w-4 text-muted-foreground" />
                           {customer.email}
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-sm">
-                        {customer.phone || '-'}
-                      </td>
-                      <td className="py-3 px-4 text-sm">
-                        {formatDateTime(customer.createdAt)}
-                      </td>
-                      <td className="py-3 px-4">
+                      <td className="px-4 py-3 text-sm">{customer.phone || '-'}</td>
+                      <td className="px-4 py-3 text-sm">{formatDateTime(customer.createdAt)}</td>
+                      <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="icon" onClick={() => handleOpenEdit(customer)}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleOpenEdit(customer)}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="icon"
                             onClick={() => handleDelete(customer.id)}
                           >
@@ -170,22 +168,23 @@ export default function AdminCustomersPage() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-4 pt-4 border-t">
+            <div className="mt-4 flex items-center justify-between border-t pt-4">
               <div className="text-sm text-muted-foreground">
-                Showing {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, customers.length)} of {customers.length} customers
+                Showing {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, customers.length)}{' '}
+                of {customers.length} customers
               </div>
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Previous
                 </Button>
                 <div className="flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                     <Button
                       key={page}
                       variant={currentPage === page ? 'default' : 'outline'}
@@ -200,7 +199,7 @@ export default function AdminCustomersPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
                 >
                   Next
@@ -260,7 +259,7 @@ export default function AdminCustomersPage() {
               Cancel
             </Button>
             <Button onClick={handleSubmit} disabled={updateCustomer.isPending}>
-              {updateCustomer.isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {updateCustomer.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Update Customer
             </Button>
           </DialogFooter>

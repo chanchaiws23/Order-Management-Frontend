@@ -10,7 +10,7 @@ function normalizeRole(role: string | undefined): UserRole {
 
 export function usePermissions() {
   const user = useAuthStore((state) => state.user);
-  
+
   // Get normalized role
   const userRole = normalizeRole(user?.role);
 

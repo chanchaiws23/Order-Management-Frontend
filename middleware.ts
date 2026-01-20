@@ -9,10 +9,7 @@ export function middleware(request: NextRequest) {
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-XSS-Protection', '1; mode=block');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  response.headers.set(
-    'Permissions-Policy',
-    'camera=(), microphone=(), geolocation=()'
-  );
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 
   // Content Security Policy - Relaxed for Next.js development
   const cspHeader = `
@@ -26,7 +23,9 @@ export function middleware(request: NextRequest) {
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-  `.replace(/\s{2,}/g, ' ').trim();
+  `
+    .replace(/\s{2,}/g, ' ')
+    .trim();
 
   // Only set CSP in production to avoid development issues
   if (process.env.NODE_ENV === 'production') {

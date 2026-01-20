@@ -18,9 +18,7 @@ export const useCartStore = create<CartState>()(
       items: [],
       addItem: (product, quantity = 1) =>
         set((state) => {
-          const existingItem = state.items.find(
-            (item) => item.product.id === product.id
-          );
+          const existingItem = state.items.find((item) => item.product.id === product.id);
 
           if (existingItem) {
             return {
@@ -53,10 +51,7 @@ export const useCartStore = create<CartState>()(
       },
       getTotalPrice: () => {
         const state = get();
-        return state.items.reduce(
-          (total, item) => total + item.product.price * item.quantity,
-          0
-        );
+        return state.items.reduce((total, item) => total + item.product.price * item.quantity, 0);
       },
     }),
     {

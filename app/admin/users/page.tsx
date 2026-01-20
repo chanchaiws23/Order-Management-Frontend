@@ -1,7 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Search, Edit, Trash2, Shield, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Plus,
+  Search,
+  Edit,
+  Trash2,
+  Shield,
+  Loader2,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -109,7 +118,7 @@ export default function AdminUsersPage() {
 
   const handleUpdate = async (data: UpdateUserForm) => {
     if (!selectedUser) return;
-    
+
     try {
       await updateUser.mutateAsync({ id: selectedUser.id, data });
       toast.success('User updated successfully');
@@ -122,7 +131,7 @@ export default function AdminUsersPage() {
 
   const handleDelete = async (id: string, email: string) => {
     if (!confirm(`Are you sure you want to delete user "${email}"?`)) return;
-    
+
     try {
       await deleteUser.mutateAsync(id);
       toast.success('User deleted successfully');
@@ -132,11 +141,13 @@ export default function AdminUsersPage() {
   };
 
   // Filter and pagination
-  const filteredUsers = allUsers?.filter((user: any) =>
-    user.email?.toLowerCase().includes(search.toLowerCase()) ||
-    user.firstName?.toLowerCase().includes(search.toLowerCase()) ||
-    user.lastName?.toLowerCase().includes(search.toLowerCase())
-  ) || [];
+  const filteredUsers =
+    allUsers?.filter(
+      (user: any) =>
+        user.email?.toLowerCase().includes(search.toLowerCase()) ||
+        user.firstName?.toLowerCase().includes(search.toLowerCase()) ||
+        user.lastName?.toLowerCase().includes(search.toLowerCase())
+    ) || [];
   const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedUsers = filteredUsers.slice(startIndex, startIndex + ITEMS_PER_PAGE);
@@ -158,7 +169,7 @@ export default function AdminUsersPage() {
         <CardHeader>
           <CardTitle>Users</CardTitle>
           <div className="relative mt-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
             <Input
               placeholder="Search users..."
               className="pl-10"
@@ -175,9 +186,7 @@ export default function AdminUsersPage() {
           )}
 
           {!isLoading && filteredUsers.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
-              No users found
-            </div>
+            <div className="py-8 text-center text-muted-foreground">No users found</div>
           )}
 
           {filteredUsers.length > 0 && (
@@ -185,21 +194,22 @@ export default function AdminUsersPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium">User</th>
-                    <th className="text-left py-3 px-4 font-medium">Email</th>
-                    <th className="text-left py-3 px-4 font-medium">Role</th>
-                    <th className="text-left py-3 px-4 font-medium">Created</th>
-                    <th className="text-right py-3 px-4 font-medium">Actions</th>
+                    <th className="px-4 py-3 text-left font-medium">User</th>
+                    <th className="px-4 py-3 text-left font-medium">Email</th>
+                    <th className="px-4 py-3 text-left font-medium">Role</th>
+                    <th className="px-4 py-3 text-left font-medium">Created</th>
+                    <th className="px-4 py-3 text-right font-medium">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedUsers.map((user: any) => (
                     <tr key={user.id} className="border-b hover:bg-gray-50">
-                      <td className="py-3 px-4">
+                      <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
                             <span className="text-sm font-medium text-primary">
-                              {user.firstName?.[0]}{user.lastName?.[0]}
+                              {user.firstName?.[0]}
+                              {user.lastName?.[0]}
                             </span>
                           </div>
                           <div>
@@ -209,23 +219,19 @@ export default function AdminUsersPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-sm">{user.email}</td>
-                      <td className="py-3 px-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${roleColors[user.role] || 'bg-gray-100 text-gray-800'}`}>
-                          <Shield className="h-3 w-3 mr-1" />
+                      <td className="px-4 py-3 text-sm">{user.email}</td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${roleColors[user.role] || 'bg-gray-100 text-gray-800'}`}
+                        >
+                          <Shield className="mr-1 h-3 w-3" />
                           {user.role}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-sm">
-                        {formatDateTime(user.createdAt)}
-                      </td>
-                      <td className="py-3 px-4">
+                      <td className="px-4 py-3 text-sm">{formatDateTime(user.createdAt)}</td>
+                      <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleEdit(user)}
-                          >
+                          <Button variant="ghost" size="icon" onClick={() => handleEdit(user)}>
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button
@@ -246,22 +252,24 @@ export default function AdminUsersPage() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-4 pt-4 border-t">
+            <div className="mt-4 flex items-center justify-between border-t pt-4">
               <div className="text-sm text-muted-foreground">
-                Showing {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, filteredUsers.length)} of {filteredUsers.length} users
+                Showing {startIndex + 1}-
+                {Math.min(startIndex + ITEMS_PER_PAGE, filteredUsers.length)} of{' '}
+                {filteredUsers.length} users
               </div>
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Previous
                 </Button>
                 <div className="flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                     <Button
                       key={page}
                       variant={currentPage === page ? 'default' : 'outline'}
@@ -276,7 +284,7 @@ export default function AdminUsersPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
                 >
                   Next
@@ -299,45 +307,39 @@ export default function AdminUsersPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input
-                    id="firstName"
-                    {...createForm.register('firstName')}
-                  />
+                  <Input id="firstName" {...createForm.register('firstName')} />
                   {createForm.formState.errors.firstName && (
-                    <p className="text-sm text-red-500">{createForm.formState.errors.firstName.message}</p>
+                    <p className="text-sm text-red-500">
+                      {createForm.formState.errors.firstName.message}
+                    </p>
                   )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input
-                    id="lastName"
-                    {...createForm.register('lastName')}
-                  />
+                  <Input id="lastName" {...createForm.register('lastName')} />
                   {createForm.formState.errors.lastName && (
-                    <p className="text-sm text-red-500">{createForm.formState.errors.lastName.message}</p>
+                    <p className="text-sm text-red-500">
+                      {createForm.formState.errors.lastName.message}
+                    </p>
                   )}
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  {...createForm.register('email')}
-                />
+                <Input id="email" type="email" {...createForm.register('email')} />
                 {createForm.formState.errors.email && (
-                  <p className="text-sm text-red-500">{createForm.formState.errors.email.message}</p>
+                  <p className="text-sm text-red-500">
+                    {createForm.formState.errors.email.message}
+                  </p>
                 )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  {...createForm.register('password')}
-                />
+                <Input id="password" type="password" {...createForm.register('password')} />
                 {createForm.formState.errors.password && (
-                  <p className="text-sm text-red-500">{createForm.formState.errors.password.message}</p>
+                  <p className="text-sm text-red-500">
+                    {createForm.formState.errors.password.message}
+                  </p>
                 )}
               </div>
               <div className="space-y-2">
@@ -364,9 +366,7 @@ export default function AdminUsersPage() {
                 Cancel
               </Button>
               <Button type="submit" disabled={createUser.isPending}>
-                {createUser.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                ) : null}
+                {createUser.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Create User
               </Button>
             </DialogFooter>
@@ -385,32 +385,26 @@ export default function AdminUsersPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="edit-firstName">First Name</Label>
-                  <Input
-                    id="edit-firstName"
-                    {...editForm.register('firstName')}
-                  />
+                  <Input id="edit-firstName" {...editForm.register('firstName')} />
                   {editForm.formState.errors.firstName && (
-                    <p className="text-sm text-red-500">{editForm.formState.errors.firstName.message}</p>
+                    <p className="text-sm text-red-500">
+                      {editForm.formState.errors.firstName.message}
+                    </p>
                   )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="edit-lastName">Last Name</Label>
-                  <Input
-                    id="edit-lastName"
-                    {...editForm.register('lastName')}
-                  />
+                  <Input id="edit-lastName" {...editForm.register('lastName')} />
                   {editForm.formState.errors.lastName && (
-                    <p className="text-sm text-red-500">{editForm.formState.errors.lastName.message}</p>
+                    <p className="text-sm text-red-500">
+                      {editForm.formState.errors.lastName.message}
+                    </p>
                   )}
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-email">Email</Label>
-                <Input
-                  id="edit-email"
-                  type="email"
-                  {...editForm.register('email')}
-                />
+                <Input id="edit-email" type="email" {...editForm.register('email')} />
                 {editForm.formState.errors.email && (
                   <p className="text-sm text-red-500">{editForm.formState.errors.email.message}</p>
                 )}
@@ -439,9 +433,7 @@ export default function AdminUsersPage() {
                 Cancel
               </Button>
               <Button type="submit" disabled={updateUser.isPending}>
-                {updateUser.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                ) : null}
+                {updateUser.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Save Changes
               </Button>
             </DialogFooter>

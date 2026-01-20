@@ -29,12 +29,16 @@ export const productSchema = z.object({
 });
 
 export const orderSchema = z.object({
-  items: z.array(z.object({
-    productId: z.string().uuid(),
-    productName: z.string(),
-    unitPrice: z.number().positive(),
-    quantity: z.number().int().positive(),
-  })).min(1, 'At least one item required'),
+  items: z
+    .array(
+      z.object({
+        productId: z.string().uuid(),
+        productName: z.string(),
+        unitPrice: z.number().positive(),
+        quantity: z.number().int().positive(),
+      })
+    )
+    .min(1, 'At least one item required'),
   shippingAddress: z.string().min(10, 'Shipping address required'),
   billingAddress: z.string().min(10, 'Billing address required'),
   paymentMethod: z.enum(['credit_card', 'paypal']),
@@ -59,20 +63,22 @@ export const couponSchema = z.object({
   usageLimit: z.number().int().positive().optional(),
 });
 
-export const changePasswordSchema = z.object({
-  currentPassword: z.string().min(8, 'Current password required'),
-  newPassword: z
-    .string()
-    .min(8, 'Password must be at least 8 characters')
-    .regex(/[A-Z]/, 'Must contain uppercase letter')
-    .regex(/[a-z]/, 'Must contain lowercase letter')
-    .regex(/[0-9]/, 'Must contain number')
-    .regex(/[^A-Za-z0-9]/, 'Must contain special character'),
-  confirmPassword: z.string(),
-}).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ['confirmPassword'],
-});
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(8, 'Current password required'),
+    newPassword: z
+      .string()
+      .min(8, 'Password must be at least 8 characters')
+      .regex(/[A-Z]/, 'Must contain uppercase letter')
+      .regex(/[a-z]/, 'Must contain lowercase letter')
+      .regex(/[0-9]/, 'Must contain number')
+      .regex(/[^A-Za-z0-9]/, 'Must contain special character'),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;

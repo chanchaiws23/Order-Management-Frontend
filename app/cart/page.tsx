@@ -14,12 +14,10 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="container mx-auto px-4 py-16">
-        <div className="max-w-md mx-auto text-center">
-          <ShoppingBag className="h-24 w-24 mx-auto text-muted-foreground mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Your cart is empty</h2>
-          <p className="text-muted-foreground mb-6">
-            Add some products to get started
-          </p>
+        <div className="mx-auto max-w-md text-center">
+          <ShoppingBag className="mx-auto mb-4 h-24 w-24 text-muted-foreground" />
+          <h2 className="mb-2 text-2xl font-bold">Your cart is empty</h2>
+          <p className="mb-6 text-muted-foreground">Add some products to get started</p>
           <Link href="/shop">
             <Button>Continue Shopping</Button>
           </Link>
@@ -30,15 +28,15 @@ export default function CartPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
+      <h1 className="mb-8 text-3xl font-bold">Shopping Cart</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-4">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="space-y-4 lg:col-span-2">
           {items.map((item) => (
             <Card key={item.product.id}>
               <CardContent className="p-6">
                 <div className="flex gap-4">
-                  <div className="relative h-24 w-24 flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
+                  <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
                     <Image
                       src={item.product.imageUrl || '/placeholder-product.jpg'}
                       alt={item.product.name}
@@ -62,7 +60,7 @@ export default function CartPage() {
                         <Trash2 className="h-4 w-4 text-red-500" />
                       </Button>
                     </div>
-                    <div className="flex items-center justify-between mt-4">
+                    <div className="mt-4 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Button
                           variant="outline"

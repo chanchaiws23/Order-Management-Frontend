@@ -29,17 +29,13 @@ export const reviewApi = {
   updateReview: (id: string, data: Partial<Review>) =>
     apiClient.put<{ success: boolean; review: Review }>(`/api/reviews/${id}`, data),
 
-  approveReview: (id: string) =>
-    apiClient.patch(`/api/reviews/${id}/approve`),
+  approveReview: (id: string) => apiClient.patch(`/api/reviews/${id}/approve`),
 
-  rejectReview: (id: string) =>
-    apiClient.patch(`/api/reviews/${id}/reject`),
+  rejectReview: (id: string) => apiClient.patch(`/api/reviews/${id}/reject`),
 
-  deleteReview: (id: string) =>
-    apiClient.delete(`/api/reviews/${id}`),
+  deleteReview: (id: string) => apiClient.delete(`/api/reviews/${id}`),
 
-  markHelpful: (id: string) =>
-    apiClient.patch(`/api/reviews/${id}/helpful`),
+  markHelpful: (id: string) => apiClient.patch(`/api/reviews/${id}/helpful`),
 };
 
 export function useProductReviews(productId: string) {
@@ -61,7 +57,7 @@ export function usePendingReviews() {
       try {
         const { data } = await reviewApi.getPendingReviews();
         const apiData = data as any;
-        
+
         if (apiData.reviews && Array.isArray(apiData.reviews)) {
           return apiData.reviews;
         }
@@ -74,7 +70,7 @@ export function usePendingReviews() {
         if (Array.isArray(apiData)) {
           return apiData;
         }
-        
+
         return [];
       } catch (error) {
         console.error('[usePendingReviews] Error:', error);

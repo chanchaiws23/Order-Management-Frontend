@@ -156,10 +156,10 @@ export default function CheckoutPage() {
         code: couponCode.trim(),
         orderTotal: totalPrice,
       });
-      
+
       const coupon = result.coupon;
       let calculatedDiscount = result.discount;
-      
+
       // Calculate discount from coupon if not already calculated
       if (calculatedDiscount === 0 && coupon) {
         if (coupon.discountType === 'PERCENTAGE' || coupon.type === 'PERCENTAGE') {
@@ -173,7 +173,7 @@ export default function CheckoutPage() {
           calculatedDiscount = coupon.discountValue || coupon.value || 0;
         }
       }
-      
+
       setAppliedCoupon(coupon);
       setDiscount(calculatedDiscount);
       toast.success(`Coupon applied! You save ${formatPrice(calculatedDiscount)}`);
@@ -245,48 +245,43 @@ export default function CheckoutPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <Link href="/cart" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary">
-          <ArrowLeft className="h-4 w-4 mr-2" />
+        <Link
+          href="/cart"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-primary"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Cart
         </Link>
-        <h1 className="text-3xl font-bold mt-4">Checkout</h1>
+        <h1 className="mt-4 text-3xl font-bold">Checkout</h1>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Left Column - Forms */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="space-y-6 lg:col-span-2">
             {/* Contact Information */}
             <Card>
               <CardHeader>
                 <CardTitle>Contact Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name *</Label>
-                    <Input
-                      id="firstName"
-                      {...register('firstName')}
-                      placeholder="John"
-                    />
+                    <Input id="firstName" {...register('firstName')} placeholder="John" />
                     {errors.firstName && (
                       <p className="text-sm text-red-500">{errors.firstName.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="lastName">Last Name *</Label>
-                    <Input
-                      id="lastName"
-                      {...register('lastName')}
-                      placeholder="Doe"
-                    />
+                    <Input id="lastName" {...register('lastName')} placeholder="Doe" />
                     {errors.lastName && (
                       <p className="text-sm text-red-500">{errors.lastName.message}</p>
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email *</Label>
                     <Input
@@ -295,21 +290,12 @@ export default function CheckoutPage() {
                       {...register('email')}
                       placeholder="john@example.com"
                     />
-                    {errors.email && (
-                      <p className="text-sm text-red-500">{errors.email.message}</p>
-                    )}
+                    {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">Phone *</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      {...register('phone')}
-                      placeholder="0812345678"
-                    />
-                    {errors.phone && (
-                      <p className="text-sm text-red-500">{errors.phone.message}</p>
-                    )}
+                    <Input id="phone" type="tel" {...register('phone')} placeholder="0812345678" />
+                    {errors.phone && <p className="text-sm text-red-500">{errors.phone.message}</p>}
                   </div>
                 </div>
               </CardContent>
@@ -329,7 +315,9 @@ export default function CheckoutPage() {
                     placeholder="123 Main Street"
                   />
                   {errors.shippingAddress?.addressLine1 && (
-                    <p className="text-sm text-red-500">{errors.shippingAddress.addressLine1.message}</p>
+                    <p className="text-sm text-red-500">
+                      {errors.shippingAddress.addressLine1.message}
+                    </p>
                   )}
                 </div>
                 <div className="space-y-2">
@@ -340,7 +328,7 @@ export default function CheckoutPage() {
                     placeholder="Apartment, suite, etc. (optional)"
                   />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="shippingAddress.city">City *</Label>
                     <Input
@@ -364,7 +352,7 @@ export default function CheckoutPage() {
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="shippingAddress.postalCode">Postal Code *</Label>
                     <Input
@@ -373,7 +361,9 @@ export default function CheckoutPage() {
                       placeholder="10110"
                     />
                     {errors.shippingAddress?.postalCode && (
-                      <p className="text-sm text-red-500">{errors.shippingAddress.postalCode.message}</p>
+                      <p className="text-sm text-red-500">
+                        {errors.shippingAddress.postalCode.message}
+                      </p>
                     )}
                   </div>
                   <div className="space-y-2">
@@ -384,7 +374,9 @@ export default function CheckoutPage() {
                       placeholder="Thailand"
                     />
                     {errors.shippingAddress?.country && (
-                      <p className="text-sm text-red-500">{errors.shippingAddress.country.message}</p>
+                      <p className="text-sm text-red-500">
+                        {errors.shippingAddress.country.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -418,7 +410,9 @@ export default function CheckoutPage() {
                       placeholder="123 Main Street"
                     />
                     {errors.billingAddress?.addressLine1 && (
-                      <p className="text-sm text-red-500">{errors.billingAddress.addressLine1.message}</p>
+                      <p className="text-sm text-red-500">
+                        {errors.billingAddress.addressLine1.message}
+                      </p>
                     )}
                   </div>
                   <div className="space-y-2">
@@ -429,7 +423,7 @@ export default function CheckoutPage() {
                       placeholder="Apartment, suite, etc. (optional)"
                     />
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="billingAddress.city">City *</Label>
                       <Input
@@ -449,11 +443,13 @@ export default function CheckoutPage() {
                         placeholder="Bangkok"
                       />
                       {errors.billingAddress?.state && (
-                        <p className="text-sm text-red-500">{errors.billingAddress.state.message}</p>
+                        <p className="text-sm text-red-500">
+                          {errors.billingAddress.state.message}
+                        </p>
                       )}
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="billingAddress.postalCode">Postal Code *</Label>
                       <Input
@@ -462,7 +458,9 @@ export default function CheckoutPage() {
                         placeholder="10110"
                       />
                       {errors.billingAddress?.postalCode && (
-                        <p className="text-sm text-red-500">{errors.billingAddress.postalCode.message}</p>
+                        <p className="text-sm text-red-500">
+                          {errors.billingAddress.postalCode.message}
+                        </p>
                       )}
                     </div>
                     <div className="space-y-2">
@@ -473,7 +471,9 @@ export default function CheckoutPage() {
                         placeholder="Thailand"
                       />
                       {errors.billingAddress?.country && (
-                        <p className="text-sm text-red-500">{errors.billingAddress.country.message}</p>
+                        <p className="text-sm text-red-500">
+                          {errors.billingAddress.country.message}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -489,26 +489,38 @@ export default function CheckoutPage() {
               <CardContent>
                 <RadioGroup
                   value={paymentMethod}
-                  onValueChange={(value) => setValue('paymentMethod', value as 'credit_card' | 'paypal')}
+                  onValueChange={(value) =>
+                    setValue('paymentMethod', value as 'credit_card' | 'paypal')
+                  }
                   className="space-y-4"
                 >
-                  <div className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:border-primary transition-colors">
+                  <div className="flex cursor-pointer items-center space-x-3 rounded-lg border p-4 transition-colors hover:border-primary">
                     <RadioGroupItem value="credit_card" id="credit_card" />
-                    <Label htmlFor="credit_card" className="flex items-center gap-3 cursor-pointer flex-1">
+                    <Label
+                      htmlFor="credit_card"
+                      className="flex flex-1 cursor-pointer items-center gap-3"
+                    >
                       <CreditCard className="h-5 w-5" />
                       <div>
                         <p className="font-medium">Credit / Debit Card</p>
-                        <p className="text-sm text-muted-foreground">Pay with Visa, Mastercard, or JCB</p>
+                        <p className="text-sm text-muted-foreground">
+                          Pay with Visa, Mastercard, or JCB
+                        </p>
                       </div>
                     </Label>
                   </div>
-                  <div className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:border-primary transition-colors">
+                  <div className="flex cursor-pointer items-center space-x-3 rounded-lg border p-4 transition-colors hover:border-primary">
                     <RadioGroupItem value="paypal" id="paypal" />
-                    <Label htmlFor="paypal" className="flex items-center gap-3 cursor-pointer flex-1">
+                    <Label
+                      htmlFor="paypal"
+                      className="flex flex-1 cursor-pointer items-center gap-3"
+                    >
                       <Wallet className="h-5 w-5" />
                       <div>
                         <p className="font-medium">PayPal</p>
-                        <p className="text-sm text-muted-foreground">Pay with your PayPal account</p>
+                        <p className="text-sm text-muted-foreground">
+                          Pay with your PayPal account
+                        </p>
                       </div>
                     </Label>
                   </div>
@@ -539,22 +551,22 @@ export default function CheckoutPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Items */}
-                <div className="space-y-3 max-h-64 overflow-y-auto">
+                <div className="max-h-64 space-y-3 overflow-y-auto">
                   {items.map((item) => (
                     <div key={item.product.id} className="flex gap-3">
-                      <div className="relative h-16 w-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
+                      <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
                         <Image
                           src={item.product.imageUrl || '/placeholder-product.jpg'}
                           alt={item.product.name}
                           fill
                           className="object-cover"
                         />
-                        <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-xs text-white flex items-center justify-center">
+                        <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">
                           {item.quantity}
                         </span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">{item.product.name}</p>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium">{item.product.name}</p>
                         <p className="text-sm text-muted-foreground">
                           {formatPrice(item.product.price)} × {item.quantity}
                         </p>
@@ -572,7 +584,7 @@ export default function CheckoutPage() {
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Coupon Code</Label>
                   {appliedCoupon ? (
-                    <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-md p-3">
+                    <div className="flex items-center justify-between rounded-md border border-green-200 bg-green-50 p-3">
                       <div className="flex items-center gap-2">
                         <Tag className="h-4 w-4 text-green-600" />
                         <div>
@@ -671,7 +683,7 @@ export default function CheckoutPage() {
                   )}
                 </Button>
 
-                <p className="text-xs text-center text-muted-foreground">
+                <p className="text-center text-xs text-muted-foreground">
                   By placing your order, you agree to our Terms of Service and Privacy Policy
                 </p>
               </CardContent>

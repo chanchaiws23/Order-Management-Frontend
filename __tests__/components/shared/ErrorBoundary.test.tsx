@@ -64,5 +64,4 @@ describe('ErrorBoundary', () => {
 
     expect(screen.getByText('Custom error message')).toBeInTheDocument();
   });
-
 });

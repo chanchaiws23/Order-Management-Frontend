@@ -35,12 +35,15 @@ export function CustomerHeader() {
             <Package className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold">OrderMS</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/shop" className="text-sm font-medium hover:text-primary transition-colors">
+          <nav className="hidden items-center gap-6 md:flex">
+            <Link href="/shop" className="text-sm font-medium transition-colors hover:text-primary">
               Products
             </Link>
             {mounted && isAuthenticated && (
-              <Link href="/my-orders" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link
+                href="/my-orders"
+                className="text-sm font-medium transition-colors hover:text-primary"
+              >
                 My Orders
               </Link>
             )}
@@ -52,7 +55,7 @@ export function CustomerHeader() {
             <Button variant="ghost" size="icon" className="relative">
               <ShoppingCart className="h-5 w-5" />
               {mounted && totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-xs text-white flex items-center justify-center">
+                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">
                   {totalItems}
                 </span>
               )}
@@ -69,7 +72,7 @@ export function CustomerHeader() {
               <Button variant="ghost" size="icon" onClick={handleLogout}>
                 <LogOut className="h-5 w-5" />
               </Button>
-              <span className="hidden md:block text-sm text-muted-foreground">
+              <span className="hidden text-sm text-muted-foreground md:block">
                 {user?.firstName}
               </span>
             </div>

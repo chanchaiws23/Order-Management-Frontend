@@ -1,7 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Search, Edit, Trash2, ToggleLeft, ToggleRight, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Plus,
+  Search,
+  Edit,
+  Trash2,
+  ToggleLeft,
+  ToggleRight,
+  Loader2,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,7 +31,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useCoupons, useDeleteCoupon, useToggleCoupon, useCreateCoupon, useUpdateCoupon } from '@/lib/api/coupons';
+import {
+  useCoupons,
+  useDeleteCoupon,
+  useToggleCoupon,
+  useCreateCoupon,
+  useUpdateCoupon,
+} from '@/lib/api/coupons';
 import { formatPrice, formatDate } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -63,16 +79,17 @@ export default function AdminCouponsPage() {
   const updateCoupon = useUpdateCoupon();
 
   // Filter and pagination
-  const filteredCoupons = allCoupons?.filter((coupon: any) =>
-    coupon.code?.toLowerCase().includes(search.toLowerCase())
-  ) || [];
+  const filteredCoupons =
+    allCoupons?.filter((coupon: any) =>
+      coupon.code?.toLowerCase().includes(search.toLowerCase())
+    ) || [];
   const totalPages = Math.ceil(filteredCoupons.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedCoupons = filteredCoupons.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this coupon?')) return;
-    
+
     try {
       await deleteCoupon.mutateAsync(id);
       toast.success('Coupon deleted successfully');
@@ -152,9 +169,9 @@ export default function AdminCouponsPage() {
         <CardHeader>
           <CardTitle>Coupon List</CardTitle>
           <div className="relative mt-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search coupons..." 
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+            <Input
+              placeholder="Search coupons..."
               className="pl-10"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -169,7 +186,7 @@ export default function AdminCouponsPage() {
           )}
 
           {!isLoading && filteredCoupons.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
+            <div className="py-8 text-center text-muted-foreground">
               No coupons found. Create your first coupon to get started.
             </div>
           )}
@@ -179,56 +196,62 @@ export default function AdminCouponsPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium">Code</th>
-                    <th className="text-left py-3 px-4 font-medium">Discount</th>
-                    <th className="text-left py-3 px-4 font-medium">Usage</th>
-                    <th className="text-left py-3 px-4 font-medium">Valid Until</th>
-                    <th className="text-left py-3 px-4 font-medium">Status</th>
-                    <th className="text-right py-3 px-4 font-medium">Actions</th>
+                    <th className="px-4 py-3 text-left font-medium">Code</th>
+                    <th className="px-4 py-3 text-left font-medium">Discount</th>
+                    <th className="px-4 py-3 text-left font-medium">Usage</th>
+                    <th className="px-4 py-3 text-left font-medium">Valid Until</th>
+                    <th className="px-4 py-3 text-left font-medium">Status</th>
+                    <th className="px-4 py-3 text-right font-medium">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedCoupons.map((coupon: any) => (
                     <tr key={coupon.id} className="border-b hover:bg-gray-50">
-                      <td className="py-3 px-4">
+                      <td className="px-4 py-3">
                         <span className="font-mono font-bold">{coupon.code}</span>
                       </td>
-                      <td className="py-3 px-4">
-                        {coupon.discountType === 'PERCENTAGE' 
+                      <td className="px-4 py-3">
+                        {coupon.discountType === 'PERCENTAGE'
                           ? `${coupon.discountValue}%`
-                          : formatPrice(coupon.discountValue)
-                        }
+                          : formatPrice(coupon.discountValue)}
                       </td>
-                      <td className="py-3 px-4 text-sm">
+                      <td className="px-4 py-3 text-sm">
                         {coupon.usageCount} / {coupon.usageLimit || '∞'}
                       </td>
-                      <td className="py-3 px-4 text-sm">
-                        {formatDate(coupon.validUntil)}
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          coupon.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                        }`}>
+                      <td className="px-4 py-3 text-sm">{formatDate(coupon.validUntil)}</td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                            coupon.isActive
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-gray-100 text-gray-800'
+                          }`}
+                        >
                           {coupon.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-2">
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="icon"
                             onClick={() => handleToggle(coupon.id)}
                           >
-                            {coupon.isActive 
-                              ? <ToggleRight className="h-4 w-4 text-green-600" />
-                              : <ToggleLeft className="h-4 w-4 text-gray-400" />
-                            }
+                            {coupon.isActive ? (
+                              <ToggleRight className="h-4 w-4 text-green-600" />
+                            ) : (
+                              <ToggleLeft className="h-4 w-4 text-gray-400" />
+                            )}
                           </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleOpenEdit(coupon)}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleOpenEdit(coupon)}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="icon"
                             onClick={() => handleDelete(coupon.id)}
                           >
@@ -245,22 +268,24 @@ export default function AdminCouponsPage() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-4 pt-4 border-t">
+            <div className="mt-4 flex items-center justify-between border-t pt-4">
               <div className="text-sm text-muted-foreground">
-                Showing {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, filteredCoupons.length)} of {filteredCoupons.length} coupons
+                Showing {startIndex + 1}-
+                {Math.min(startIndex + ITEMS_PER_PAGE, filteredCoupons.length)} of{' '}
+                {filteredCoupons.length} coupons
               </div>
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Previous
                 </Button>
                 <div className="flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                     <Button
                       key={page}
                       variant={currentPage === page ? 'default' : 'outline'}
@@ -275,7 +300,7 @@ export default function AdminCouponsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
                 >
                   Next
@@ -293,7 +318,7 @@ export default function AdminCouponsPage() {
           <DialogHeader>
             <DialogTitle>{editingCoupon ? 'Edit Coupon' : 'Add New Coupon'}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
+          <div className="max-h-[60vh] space-y-4 overflow-y-auto py-4">
             <div className="space-y-2">
               <Label htmlFor="code">Coupon Code *</Label>
               <Input
@@ -308,7 +333,9 @@ export default function AdminCouponsPage() {
                 <Label htmlFor="discountType">Discount Type</Label>
                 <Select
                   value={formData.discountType}
-                  onValueChange={(value: 'PERCENTAGE' | 'FIXED_AMOUNT') => setFormData({ ...formData, discountType: value })}
+                  onValueChange={(value: 'PERCENTAGE' | 'FIXED_AMOUNT') =>
+                    setFormData({ ...formData, discountType: value })
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -326,7 +353,9 @@ export default function AdminCouponsPage() {
                   type="number"
                   min="0"
                   value={formData.discountValue}
-                  onChange={(e) => setFormData({ ...formData, discountValue: parseFloat(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, discountValue: parseFloat(e.target.value) || 0 })
+                  }
                 />
               </div>
             </div>
@@ -338,7 +367,12 @@ export default function AdminCouponsPage() {
                   type="number"
                   min="0"
                   value={formData.minimumOrderAmount}
-                  onChange={(e) => setFormData({ ...formData, minimumOrderAmount: parseFloat(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      minimumOrderAmount: parseFloat(e.target.value) || 0,
+                    })
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -348,7 +382,9 @@ export default function AdminCouponsPage() {
                   type="number"
                   min="0"
                   value={formData.usageLimit}
-                  onChange={(e) => setFormData({ ...formData, usageLimit: parseInt(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, usageLimit: parseInt(e.target.value) || 0 })
+                  }
                 />
               </div>
             </div>
@@ -378,7 +414,9 @@ export default function AdminCouponsPage() {
                 checked={formData.isActive}
                 onCheckedChange={(checked) => setFormData({ ...formData, isActive: !!checked })}
               />
-              <Label htmlFor="isActive" className="cursor-pointer">Coupon is active</Label>
+              <Label htmlFor="isActive" className="cursor-pointer">
+                Coupon is active
+              </Label>
             </div>
           </div>
           <DialogFooter>
@@ -386,7 +424,7 @@ export default function AdminCouponsPage() {
               Cancel
             </Button>
             <Button onClick={handleSubmit} disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {editingCoupon ? 'Update Coupon' : 'Create Coupon'}
             </Button>
           </DialogFooter>

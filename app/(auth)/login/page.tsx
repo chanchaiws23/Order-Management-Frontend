@@ -9,7 +9,14 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { useLogin } from '@/lib/api/auth';
 import { loginSchema, LoginFormData } from '@/lib/utils/validators';
 import { useAuthStore } from '@/lib/stores/authStore';
@@ -33,13 +40,16 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const response = await loginMutation.mutateAsync(data);
-      
+
       const apiData = response.data as any;
       const loggedInUser = apiData.user || apiData.data?.user || apiData;
-      
+
       toast.success('Login successful!');
-      
-      if (loggedInUser?.role && ['STAFF', 'MANAGER', 'ADMIN', 'SUPER_ADMIN'].includes(loggedInUser.role)) {
+
+      if (
+        loggedInUser?.role &&
+        ['STAFF', 'MANAGER', 'ADMIN', 'SUPER_ADMIN'].includes(loggedInUser.role)
+      ) {
         router.push('/admin/dashboard');
       } else {
         router.push('/shop');
@@ -54,15 +64,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <div className="flex items-center justify-center mb-4">
-            <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
+          <div className="mb-4 flex items-center justify-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
               <LogIn className="h-6 w-6 text-white" />
             </div>
           </div>
-          <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
+          <CardTitle className="text-center text-2xl">Welcome back</CardTitle>
           <CardDescription className="text-center">
             Enter your credentials to access your account
           </CardDescription>
@@ -78,9 +88,7 @@ export default function LoginPage() {
                 {...register('email')}
                 disabled={isLoading}
               />
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
-              )}
+              {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
@@ -91,16 +99,14 @@ export default function LoginPage() {
                 {...register('password')}
                 disabled={isLoading}
               />
-              {errors.password && (
-                <p className="text-sm text-red-500">{errors.password.message}</p>
-              )}
+              {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? 'Signing in...' : 'Sign in'}
             </Button>
-            <div className="text-sm text-center text-muted-foreground">
+            <div className="text-center text-sm text-muted-foreground">
               Don&apos;t have an account?{' '}
               <Link href="/register" className="text-primary hover:underline">
                 Sign up

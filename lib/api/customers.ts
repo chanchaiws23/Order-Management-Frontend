@@ -17,8 +17,7 @@ export const customerApi = {
   updateCustomer: (id: string, data: Partial<Customer>) =>
     apiClient.put<{ success: boolean; customer: Customer }>(`/api/customers/${id}`, data),
 
-  deleteCustomer: (id: string) =>
-    apiClient.delete(`/api/customers/${id}`),
+  deleteCustomer: (id: string) => apiClient.delete(`/api/customers/${id}`),
 };
 
 export function useCustomers(params?: { page?: number; limit?: number; search?: string }) {
@@ -28,7 +27,7 @@ export function useCustomers(params?: { page?: number; limit?: number; search?: 
       try {
         const { data } = await customerApi.getCustomers(params);
         const apiData = data as any;
-        
+
         if (apiData.customers && Array.isArray(apiData.customers)) {
           return apiData.customers;
         }
@@ -41,7 +40,7 @@ export function useCustomers(params?: { page?: number; limit?: number; search?: 
         if (Array.isArray(apiData)) {
           return apiData;
         }
-        
+
         return [];
       } catch (error) {
         console.error('[useCustomers] Error:', error);

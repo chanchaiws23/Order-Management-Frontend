@@ -4,11 +4,9 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/lib/stores/authStore';
 
 export const authApi = {
-  register: (data: RegisterRequest) =>
-    apiClient.post<AuthResponse>('/api/auth/register', data),
+  register: (data: RegisterRequest) => apiClient.post<AuthResponse>('/api/auth/register', data),
 
-  login: (data: LoginRequest) =>
-    apiClient.post<AuthResponse>('/api/auth/login', data),
+  login: (data: LoginRequest) => apiClient.post<AuthResponse>('/api/auth/login', data),
 
   logout: () => apiClient.post('/api/auth/logout'),
 
@@ -32,10 +30,10 @@ export function useLogin() {
     mutationFn: authApi.login,
     onSuccess: (response) => {
       const apiData = response.data as any;
-      
+
       // Handle different response structures
       let user, accessToken;
-      
+
       if (apiData.user && apiData.tokens) {
         user = apiData.user;
         accessToken = apiData.tokens.accessToken;
@@ -46,7 +44,7 @@ export function useLogin() {
         user = apiData;
         accessToken = apiData.accessToken;
       }
-      
+
       if (user && accessToken) {
         // Normalize role to uppercase
         user = {

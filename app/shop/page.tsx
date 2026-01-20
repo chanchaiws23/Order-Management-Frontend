@@ -17,12 +17,12 @@ export default function ProductsPage() {
   });
 
   const { data: response, isLoading, error } = useProducts({ search, page, limit: 10, ...filters });
-  
+
   // Extract products and pagination from response
   const products = response?.products || [];
   const totalPages = response?.totalPages || 1;
   const total = response?.total || 0;
-  
+
   // Log for debugging
   if (error) {
     console.error('Products fetch error:', error);
@@ -31,15 +31,13 @@ export default function ProductsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Our Products</h1>
-        <p className="text-muted-foreground">
-          Discover our wide range of quality products
-        </p>
+        <h1 className="mb-2 text-4xl font-bold">Our Products</h1>
+        <p className="text-muted-foreground">Discover our wide range of quality products</p>
       </div>
 
-      <div className="mb-6 flex flex-col md:flex-row gap-4">
+      <div className="mb-6 flex flex-col gap-4 md:flex-row">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
           <Input
             placeholder="Search products..."
             value={search}
@@ -54,28 +52,28 @@ export default function ProductsPage() {
       </div>
 
       {isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="h-96 bg-gray-100 animate-pulse rounded-lg" />
+            <div key={i} className="h-96 animate-pulse rounded-lg bg-gray-100" />
           ))}
         </div>
       )}
 
       {error && (
-        <div className="text-center py-12">
+        <div className="py-12 text-center">
           <p className="text-red-500">Failed to load products. Please try again.</p>
         </div>
       )}
 
       {products && products.length === 0 && (
-        <div className="text-center py-12">
+        <div className="py-12 text-center">
           <p className="text-muted-foreground">No products found.</p>
         </div>
       )}
 
       {products && products.length > 0 && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {products.map((product: any) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -86,18 +84,18 @@ export default function ProductsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage(p => Math.max(1, p - 1))}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
               >
-                <ChevronLeft className="h-4 w-4 mr-1" />
+                <ChevronLeft className="mr-1 h-4 w-4" />
                 Previous
               </Button>
-              
+
               <div className="flex items-center gap-2">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
                   <Button
                     key={pageNum}
-                    variant={page === pageNum ? "default" : "outline"}
+                    variant={page === pageNum ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setPage(pageNum)}
                     className="min-w-[40px]"
@@ -110,18 +108,18 @@ export default function ProductsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
               >
                 Next
-                <ChevronRight className="h-4 w-4 ml-1" />
+                <ChevronRight className="ml-1 h-4 w-4" />
               </Button>
             </div>
           )}
 
           {total > 0 && (
             <div className="mt-4 text-center text-sm text-muted-foreground">
-              Showing {((page - 1) * 10) + 1} to {Math.min(page * 10, total)} of {total} products
+              Showing {(page - 1) * 10 + 1} to {Math.min(page * 10, total)} of {total} products
             </div>
           )}
         </>

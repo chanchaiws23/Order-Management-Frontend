@@ -28,11 +28,13 @@ export const userApi = {
 
   // GET /api/users/stats - สถิติ users
   getUserStats: () =>
-    apiClient.get<{ success: boolean; stats: { total: number; byRole: Record<string, number>; active: number; inactive: number } }>('/api/users/stats'),
+    apiClient.get<{
+      success: boolean;
+      stats: { total: number; byRole: Record<string, number>; active: number; inactive: number };
+    }>('/api/users/stats'),
 
   // GET /api/users/:id - ดูข้อมูล user คนใดคนหนึ่ง
-  getUser: (id: string) =>
-    apiClient.get<{ success: boolean; user: User }>(`/api/users/${id}`),
+  getUser: (id: string) => apiClient.get<{ success: boolean; user: User }>(`/api/users/${id}`),
 
   // POST /api/users - สร้าง user ใหม่
   createUser: (data: CreateUserRequest) =>
@@ -43,18 +45,22 @@ export const userApi = {
     apiClient.put<{ success: boolean; user: User }>(`/api/users/${id}`, data),
 
   // DELETE /api/users/:id - ลบ user
-  deleteUser: (id: string) =>
-    apiClient.delete(`/api/users/${id}`),
+  deleteUser: (id: string) => apiClient.delete(`/api/users/${id}`),
 };
 
-export function useUsers(params?: { page?: number; limit?: number; search?: string; role?: string }) {
+export function useUsers(params?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+  role?: string;
+}) {
   return useQuery({
     queryKey: ['users', params],
     queryFn: async () => {
       try {
         const { data } = await userApi.getUsers(params);
         const apiData = data as any;
-        
+
         if (apiData.users && Array.isArray(apiData.users)) {
           return apiData.users;
         }
@@ -67,7 +73,7 @@ export function useUsers(params?: { page?: number; limit?: number; search?: stri
         if (Array.isArray(apiData)) {
           return apiData;
         }
-        
+
         return [];
       } catch (error) {
         console.error('[useUsers] Error:', error);
