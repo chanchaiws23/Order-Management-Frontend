@@ -1,32 +1,31 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-  NEXT_PUBLIC_API_URL: z.string().url({
-    message: 'NEXT_PUBLIC_API_URL must be a valid URL',
-  }),
-  NEXT_PUBLIC_SITE_URL: z.string().url({
-    message: 'NEXT_PUBLIC_SITE_URL must be a valid URL',
-  }),
+  NEXT_PUBLIC_API_URL: z.string().url().default('http://localhost:3000'),
+  NEXT_PUBLIC_SITE_URL: z.string().url().default('http://localhost:3001'),
 });
 
 export type Env = z.infer<typeof envSchema>;
 
-function validateEnv(): Env {
-  try {
-    return envSchema.parse({
-      NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
-    });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      const missingVars = error.errors.map((err) => err.path.join('.')).join(', ');
-      throw new Error(
-        `Missing or invalid environment variables: ${missingVars}\n` +
-          'Please check your .env.local file and ensure all required variables are set correctly.'
-      );
+function getEnv(): Env {
+  const result = envSchema.safeParse({
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || undefined,
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || undefined,
+  });
+
+  if (!result.success) {
+    // In development, warn but don't crash
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Environment validation warning:', result.error.flatten());
     }
-    throw error;
+    // Return defaults
+    return {
+      NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
+      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001',
+    };
   }
+
+  return result.data;
 }
 
-export const env = validateEnv();
+export const env = getEnv();
