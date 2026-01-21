@@ -1,17 +1,21 @@
 'use client';
 
-import { useState } from 'react';
-import { ArrowLeft, Save, Mail, Bell, MessageSquare } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ArrowLeft, Save, Mail, Bell, MessageSquare, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import { useNotificationSettings, useUpdateNotificationSettings } from '@/lib/api/settings';
 
 export default function NotificationSettingsPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const { data: notificationData, isLoading: isLoadingData } = useNotificationSettings();
+  const updateSettings = useUpdateNotificationSettings();
+
   const [settings, setSettings] = useState({
     email: {
       enabled: true,
@@ -36,11 +40,42 @@ export default function NotificationSettingsPage() {
     },
   });
 
+  useEffect(() => {
+    if (notificationData) {
+      setSettings((prev) => ({
+        ...prev,
+        email: {
+          ...prev.email,
+          orderConfirmation: notificationData.orderConfirmation ?? true,
+          orderShipped: notificationData.orderStatusUpdate ?? true,
+          orderDelivered: notificationData.orderStatusUpdate ?? true,
+          orderCancelled: notificationData.orderStatusUpdate ?? true,
+          lowStock: notificationData.adminLowStock ?? true,
+        },
+        admin: {
+          ...prev.admin,
+          newOrder: notificationData.adminNewOrder ?? true,
+          lowStock: notificationData.adminLowStock ?? true,
+        },
+      }));
+    }
+  }, [notificationData]);
+
   const handleSave = async () => {
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast.success('Notification settings saved successfully');
-    setIsLoading(false);
+    try {
+      await updateSettings.mutateAsync({
+        emailNotifications: settings.email.enabled,
+        orderConfirmation: settings.email.orderConfirmation,
+        orderStatusUpdate: settings.email.orderShipped,
+        promotionalEmails: false,
+        adminNewOrder: settings.admin.newOrder,
+        adminLowStock: settings.admin.lowStock,
+        lowStockThreshold: 10,
+      });
+      toast.success('Notification settings saved successfully');
+    } catch {
+      toast.error('Failed to save notification settings');
+    }
   };
 
   return (
@@ -235,12 +270,22 @@ export default function NotificationSettingsPage() {
         </Card>
       </div>
 
-      <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={isLoading}>
-          <Save className="mr-2 h-4 w-4" />
-          {isLoading ? 'Saving...' : 'Save Settings'}
-        </Button>
-      </div>
+      {isLoadingData ? (
+        <div className="flex justify-end">
+          <Skeleton className="h-10 w-32" />
+        </div>
+      ) : (
+        <div className="flex justify-end">
+          <Button onClick={handleSave} disabled={updateSettings.isPending}>
+            {updateSettings.isPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 h-4 w-4" />
+            )}
+            {updateSettings.isPending ? 'Saving...' : 'Save Settings'}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

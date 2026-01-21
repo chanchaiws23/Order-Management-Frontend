@@ -1,31 +1,30 @@
 'use client';
 
-import { useState } from 'react';
-import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ArrowLeft, Save, Plus, Trash2, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-
-interface ShippingMethod {
-  id: string;
-  name: string;
-  price: number;
-  estimatedDays: string;
-  isActive: boolean;
-}
+import { useShippingSettings, useUpdateShippingSettings, ShippingMethod } from '@/lib/api/settings';
 
 export default function ShippingSettingsPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const { data: shippingData, isLoading: isLoadingData } = useShippingSettings();
+  const updateSettings = useUpdateShippingSettings();
+
   const [freeShippingThreshold, setFreeShippingThreshold] = useState(1000);
-  const [methods, setMethods] = useState<ShippingMethod[]>([
-    { id: '1', name: 'Standard Shipping', price: 50, estimatedDays: '3-5', isActive: true },
-    { id: '2', name: 'Express Shipping', price: 100, estimatedDays: '1-2', isActive: true },
-    { id: '3', name: 'Same Day Delivery', price: 200, estimatedDays: 'Same day', isActive: false },
-  ]);
+  const [methods, setMethods] = useState<ShippingMethod[]>([]);
+
+  useEffect(() => {
+    if (shippingData) {
+      setFreeShippingThreshold(shippingData.freeShippingThreshold);
+      setMethods(shippingData.methods);
+    }
+  }, [shippingData]);
 
   const handleAddMethod = () => {
     const newMethod: ShippingMethod = {
@@ -47,10 +46,12 @@ export default function ShippingSettingsPage() {
   };
 
   const handleSave = async () => {
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast.success('Shipping settings saved successfully');
-    setIsLoading(false);
+    try {
+      await updateSettings.mutateAsync({ freeShippingThreshold, methods });
+      toast.success('Shipping settings saved successfully');
+    } catch {
+      toast.error('Failed to save shipping settings');
+    }
   };
 
   return (
@@ -149,12 +150,22 @@ export default function ShippingSettingsPage() {
         </CardContent>
       </Card>
 
-      <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={isLoading}>
-          <Save className="mr-2 h-4 w-4" />
-          {isLoading ? 'Saving...' : 'Save Settings'}
-        </Button>
-      </div>
+      {isLoadingData ? (
+        <div className="flex justify-end">
+          <Skeleton className="h-10 w-32" />
+        </div>
+      ) : (
+        <div className="flex justify-end">
+          <Button onClick={handleSave} disabled={updateSettings.isPending}>
+            {updateSettings.isPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 h-4 w-4" />
+            )}
+            {updateSettings.isPending ? 'Saving...' : 'Save Settings'}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

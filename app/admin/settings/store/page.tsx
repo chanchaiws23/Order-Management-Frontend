@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { ArrowLeft, Save, Upload } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ArrowLeft, Save, Upload, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,26 +9,37 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import { useStoreSettings, useUpdateStoreSettings, StoreSettings } from '@/lib/api/settings';
 
 export default function StoreSettingsPage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [settings, setSettings] = useState({
-    storeName: 'My Store',
-    storeEmail: 'contact@mystore.com',
-    storePhone: '+66 123 456 789',
-    storeAddress: '123 Main Street, Bangkok, Thailand 10110',
+  const { data: storeData, isLoading: isLoadingData } = useStoreSettings();
+  const updateSettings = useUpdateStoreSettings();
+
+  const [settings, setSettings] = useState<StoreSettings>({
+    storeName: '',
+    storeEmail: '',
+    storePhone: '',
+    storeAddress: '',
     storeCurrency: 'THB',
-    storeDescription: 'Your one-stop shop for quality products.',
+    storeDescription: '',
     logoUrl: '',
   });
 
+  useEffect(() => {
+    if (storeData) {
+      setSettings(storeData);
+    }
+  }, [storeData]);
+
   const handleSave = async () => {
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast.success('Store settings saved successfully');
-    setIsLoading(false);
+    try {
+      await updateSettings.mutateAsync(settings);
+      toast.success('Store settings saved successfully');
+    } catch {
+      toast.error('Failed to save store settings');
+    }
   };
 
   return (
@@ -150,12 +161,22 @@ export default function StoreSettingsPage() {
         </Card>
       </div>
 
-      <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={isLoading}>
-          <Save className="mr-2 h-4 w-4" />
-          {isLoading ? 'Saving...' : 'Save Settings'}
-        </Button>
-      </div>
+      {isLoadingData ? (
+        <div className="flex justify-end">
+          <Skeleton className="h-10 w-32" />
+        </div>
+      ) : (
+        <div className="flex justify-end">
+          <Button onClick={handleSave} disabled={updateSettings.isPending}>
+            {updateSettings.isPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 h-4 w-4" />
+            )}
+            {updateSettings.isPending ? 'Saving...' : 'Save Settings'}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

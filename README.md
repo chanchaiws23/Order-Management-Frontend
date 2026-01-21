@@ -25,7 +25,7 @@ A modern, secure, and user-friendly frontend application for an Order Management
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 
 ### Installation
